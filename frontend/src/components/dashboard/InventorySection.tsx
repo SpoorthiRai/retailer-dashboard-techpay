@@ -21,9 +21,7 @@ export default function InventorySection({ filters }: Props) {
 
   const { summary, products } = inventory
   const oosProducts = products.filter(p => p.quantity === 0)
-  const lowProducts = products.filter(p => p.quantity >= 1 && p.quantity <= 9)
-  const healthyProducts = products.filter(p => p.quantity >= 10)
-
+ 
   // Category breakdown
   const catMap: Record<string, { total: number; oos: number }> = {}
   for (const p of products) {

@@ -156,7 +156,7 @@ export default function CategorySection({ metrics }: Props) {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value: number, name: string) => [value, name]}
+                  formatter={(value: any, name: any) => [value, name]}
                 />
               </PieChart>
             </ResponsiveContainer>

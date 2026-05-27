@@ -31,7 +31,7 @@ const STORES: StoreInfo[] = [
   { id: "699eeafa68e46cfa4b7e17f8", name: "Asif Technologies", city: "Bengaluru", state: "Karnataka", status: "active", type: "RETAIL", lat: 12.96, lng: 77.58 },
 ];
 
-const STORE_MAP = Object.fromEntries(STORES.map((s) => [s.id, s]));
+
 
 export async function mockFetchFilterOptions(): Promise<FilterOptionsResponse> {
   await delay(100);
