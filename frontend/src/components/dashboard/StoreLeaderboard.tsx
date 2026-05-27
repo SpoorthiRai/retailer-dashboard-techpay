@@ -214,9 +214,9 @@ export default function StoreLeaderboard({ stores }: Props) {
               width={95}
             />
             <Tooltip
-              formatter={(value: number) =>
+              formatter={(value: any) =>
                 sortBy === 'revenue'
-                  ? [`₹${value.toLocaleString('en-IN')}`, 'Revenue']
+                  ? [`₹${Number(value).toLocaleString('en-IN')}`, 'Revenue']
                   : [value, 'Orders']
               }
               cursor={{ fill: '#f5f6fa' }}

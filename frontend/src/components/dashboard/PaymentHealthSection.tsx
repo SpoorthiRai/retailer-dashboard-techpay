@@ -6,7 +6,7 @@
 // 3. Payment Method Success Rates — which methods succeed
 // ============================================================
 
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis } from 'recharts'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import type { MetricsResponse } from '@/types/api.types'
 
 interface Props {
@@ -91,7 +91,7 @@ export default function PaymentHealthSection({ metrics }: Props) {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value: number, name: string) => [value, name]}
+                  formatter={(value: any, name: any) => [value, name]}
                 />
               </PieChart>
             </ResponsiveContainer>
