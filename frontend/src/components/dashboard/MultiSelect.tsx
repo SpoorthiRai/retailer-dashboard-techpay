@@ -11,9 +11,11 @@ interface Props {
   options: string[]
   selected: string[]
   onChange: (selected: string[]) => void
+  variant?: 'dark' | 'light'
+  disabled?: boolean
 }
 
-export default function MultiSelect({ label, options, selected, onChange }: Props) {
+export default function MultiSelect({ label, options, selected, onChange, variant = 'dark', disabled = false }: Props) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -50,16 +52,25 @@ export default function MultiSelect({ label, options, selected, onChange }: Prop
       ? selected[0]
       : `${selected.length} ${label} selected`
 
+  const triggerClass = variant === 'light'
+    ? `bg-white text-[#1C2B3A] text-sm rounded-lg px-3 py-2
+       border border-gray-200 min-w-[150px] cursor-pointer
+       focus:outline-none focus:ring-1 focus:ring-purple-300
+       flex items-center justify-between gap-2 w-full
+       hover:border-gray-300 transition-colors
+       ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
+    : `bg-[#6a0096] text-white text-sm rounded-lg px-3 py-2
+       border border-white/10 min-w-[150px] cursor-pointer
+       focus:outline-none focus:ring-1 focus:ring-white/30
+       flex items-center justify-between gap-2`
+
   return (
     <div ref={ref} className="relative">
 
       {/* Trigger button */}
       <button
-        onClick={() => setOpen(!open)}
-        className="bg-[#6a0096] text-white text-sm rounded-lg px-3 py-2
-                   border border-white/10 min-w-[150px] cursor-pointer
-                   focus:outline-none focus:ring-1 focus:ring-white/30
-                   flex items-center justify-between gap-2"
+        onClick={() => !disabled && setOpen(!open)}
+        className={triggerClass}
       >
         <span className="truncate max-w-[150px] text-left">{displayText}</span>
         <span className={`flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}>

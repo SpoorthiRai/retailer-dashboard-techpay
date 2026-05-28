@@ -9,15 +9,17 @@ export default function DashboardHeader() {
       
       {/* Left side — logo + title */}
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl bg-[#1A8C7A] flex items-center justify-center">
-          <span className="text-white font-bold text-lg">T</span>
-        </div>
+        <img
+          src="/techpay_new_logo.png"
+          alt="TechPay"
+          className="h-10 w-auto rounded-xl bg-white/5 p-1"
+        />
         <div>
           <h1 className="text-white text-xl font-bold tracking-tight">
-            TechPay
+            Retail Partner Sales Dashboard
           </h1>
           <p className="text-white/50 text-xs">
-            Retail Partner Sales Dashboard
+            Partner portal overview
           </p>
         </div>
       </div>

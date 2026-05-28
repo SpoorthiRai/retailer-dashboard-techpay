@@ -195,3 +195,13 @@ export interface InventoryResponse {
     healthyStock: number;
   };
 }
+
+export type UserRole = 'distributor' | 'retailer' | 'store_manager'
+
+export interface AuthUser {
+  role: UserRole
+  name: string
+  email: string
+  storeIds: string[]
+  storeName?: string
+}
