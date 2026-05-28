@@ -11,4 +11,14 @@ body {
   background-color: #f5f6fa;
   color: #1C2B3A;
   font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.login-bg {
+  background: linear-gradient(145deg, #f8f5ff 0%, #f5f6fa 50%, #eef4ff 100%);
+}
+
+.login-form-bg {
+  background: linear-gradient(145deg, #f8f5ff 0%, #f5f6fa 50%, #eef4ff 100%);
 }
