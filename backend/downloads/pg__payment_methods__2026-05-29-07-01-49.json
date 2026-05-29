@@ -1,0 +1,22 @@
+[
+  {
+    "payment_method": "CASHFREE",
+    "total": "128",
+    "success_count": "50"
+  },
+  {
+    "payment_method": "CASHFREE_ZYPE",
+    "total": "21",
+    "success_count": "2"
+  },
+  {
+    "payment_method": "OFFLINE",
+    "total": "10",
+    "success_count": "0"
+  },
+  {
+    "payment_method": "PAYU",
+    "total": "6",
+    "success_count": "1"
+  }
+]

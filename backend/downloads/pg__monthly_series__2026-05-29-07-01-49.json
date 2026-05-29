@@ -1,0 +1,38 @@
+[
+  {
+    "month": "Nov 2025",
+    "total_orders": "25",
+    "successful_orders": "8",
+    "gmv": "1960669.00"
+  },
+  {
+    "month": "Dec 2025",
+    "total_orders": "30",
+    "successful_orders": "9",
+    "gmv": "7428181.00"
+  },
+  {
+    "month": "Jan 2026",
+    "total_orders": "44",
+    "successful_orders": "18",
+    "gmv": "7056858.00"
+  },
+  {
+    "month": "Feb 2026",
+    "total_orders": "10",
+    "successful_orders": "1",
+    "gmv": "1242333.00"
+  },
+  {
+    "month": "Mar 2026",
+    "total_orders": "22",
+    "successful_orders": "3",
+    "gmv": "2249978.00"
+  },
+  {
+    "month": "Apr 2026",
+    "total_orders": "34",
+    "successful_orders": "14",
+    "gmv": "3808504.00"
+  }
+]

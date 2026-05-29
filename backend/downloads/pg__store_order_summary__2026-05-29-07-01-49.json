@@ -1,0 +1,58 @@
+[
+  {
+    "store_id": "694116c6cf680aaab0604138",
+    "total_orders": "87",
+    "confirmed_orders": "73",
+    "gmv": "8408310.00",
+    "emi_orders": "6"
+  },
+  {
+    "store_id": "68d3df2fd760f8a83938bee5",
+    "total_orders": "20",
+    "confirmed_orders": "20",
+    "gmv": "6694299.00",
+    "emi_orders": "3"
+  },
+  {
+    "store_id": "69796a9f54c43a3e763a968f",
+    "total_orders": "16",
+    "confirmed_orders": "15",
+    "gmv": "4985333.00",
+    "emi_orders": "4"
+  },
+  {
+    "store_id": "68da1f9743a00ae01ab1def0",
+    "total_orders": "32",
+    "confirmed_orders": "32",
+    "gmv": "2282723.00",
+    "emi_orders": "8"
+  },
+  {
+    "store_id": "69e90ee51914179938d0588e",
+    "total_orders": "3",
+    "confirmed_orders": "3",
+    "gmv": "874720.00",
+    "emi_orders": "0"
+  },
+  {
+    "store_id": "696a144f36894b28bd39b18e",
+    "total_orders": "4",
+    "confirmed_orders": "4",
+    "gmv": "214490.00",
+    "emi_orders": "0"
+  },
+  {
+    "store_id": "6979fc3efb22023e701e38e9",
+    "total_orders": "1",
+    "confirmed_orders": "1",
+    "gmv": "157499.00",
+    "emi_orders": "0"
+  },
+  {
+    "store_id": "695f8530d0244722bf0ae1c9",
+    "total_orders": "2",
+    "confirmed_orders": "2",
+    "gmv": "129149.00",
+    "emi_orders": "0"
+  }
+]

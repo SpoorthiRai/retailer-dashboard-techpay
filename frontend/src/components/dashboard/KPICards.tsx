@@ -38,7 +38,7 @@ export default function KPICards({ metrics, filters }: Props) {
 
   return (
     <>
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-3">
         {CARDS.map((card) => {
           const value = metrics[card.key as keyof MetricsResponse] as number
           const formatted = formatValue(value, card.format)
@@ -51,7 +51,7 @@ export default function KPICards({ metrics, filters }: Props) {
               key={card.key}
               onClick={() => handleCardClick(card)}
               className={`bg-white rounded-xl shadow-sm border border-gray-100
-                         flex-shrink-0 min-w-[165px] overflow-hidden
+                         overflow-hidden
                          ${card.clickable || card.scrollTo
                            ? 'cursor-pointer hover:shadow-md hover:border-purple-200 transition-all'
                            : ''}`}

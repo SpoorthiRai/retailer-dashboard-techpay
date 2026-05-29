@@ -6,10 +6,11 @@ interface Props {
   filters: Filters
   options: FilterOptionsResponse
   onFiltersChange: (f: Filters) => void
+  hideStateCity?: boolean
 }
 
-const DEFAULT_DATE_FROM = '2025-11-01'
-const DEFAULT_DATE_TO = '2026-03-31'
+const DEFAULT_DATE_FROM = '2026-05-01'
+const DEFAULT_DATE_TO = '2026-05-30'
 
 const QUICK_RANGES = [
   { label: 'All',          dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO },
@@ -19,7 +20,7 @@ const QUICK_RANGES = [
   { label: 'This Year',    dateFrom: getYearStart(), dateTo: today() },
 ]
 
-export default function FilterBar({ filters, options, onFiltersChange }: Props) {
+export default function FilterBar({ filters, options, onFiltersChange, hideStateCity = false }: Props) {
   const [activeRange, setActiveRange] = useState('All')
 
   // Available cities based on selected states
@@ -84,20 +85,24 @@ export default function FilterBar({ filters, options, onFiltersChange }: Props) 
       <div className="flex flex-wrap items-center gap-3">
 
         {/* State multi-select */}
-        <MultiSelect
-          label="States"
-          options={options.states}
-          selected={filters.state}
-          onChange={handleStateChange}
-        />
+        {!hideStateCity && (
+          <MultiSelect
+            label="States"
+            options={options.states}
+            selected={filters.state}
+            onChange={handleStateChange}
+          />
+        )}
 
         {/* City multi-select */}
-        <MultiSelect
-          label="Cities"
-          options={availableCities}
-          selected={filters.city}
-          onChange={handleCityChange}
-        />
+        {!hideStateCity && (
+          <MultiSelect
+            label="Cities"
+            options={availableCities}
+            selected={filters.city}
+            onChange={handleCityChange}
+          />
+        )}
 
         {/* Store multi-select */}
         <MultiSelect

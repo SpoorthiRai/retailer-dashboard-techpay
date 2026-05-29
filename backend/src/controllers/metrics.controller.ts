@@ -116,9 +116,18 @@ export async function getMetrics(req: Request, res: Response) {
             COUNT(*) FILTER (WHERE status = 'CONFIRMED') AS confirmed,
             COUNT(*) FILTER (WHERE ${isSuccess}) AS payment_success,
             COUNT(*) FILTER (WHERE
-              cashfree_payment_status = 'USER_DROPPED'
-              OR payment_status = 'USER_DROPPED'
-            ) AS user_dropped
+              status = 'CONFIRMED'
+              AND (cashfree_payment_status = 'USER_DROPPED' OR payment_status = 'USER_DROPPED')
+            ) AS user_dropped,
+            COUNT(*) FILTER (WHERE
+              status = 'CONFIRMED'
+              AND NOT (${isSuccess})
+              AND NOT (cashfree_payment_status = 'USER_DROPPED' OR payment_status = 'USER_DROPPED')
+              AND (
+                COALESCE(cashfree_payment_status, '') = 'FAILED'
+                OR COALESCE(payment_status, '') = 'FAILED'
+              )
+            ) AS failed_count
           FROM orders_order ${where}`, params),
 
         // Payment methods
@@ -389,13 +398,22 @@ export async function getMetrics(req: Request, res: Response) {
         quantity: Number(r.quantity),
       })),
       storePerformance,
-      orderFunnel: {
-        total: Number(funnel.total),
-        confirmed: Number(funnel.confirmed),
-        paymentSuccess,
-        userDropped: Number(funnel.user_dropped),
-        failedPending: Number(funnel.total) - paymentSuccess - Number(funnel.user_dropped),
-      },
+      orderFunnel: (() => {
+        const confirmed   = Number(funnel.confirmed);
+        const userDropped = Number(funnel.user_dropped);
+        const failed      = Number(funnel.failed_count);
+        // pending = everything confirmed that isn't success, dropped, or explicitly failed
+        const pending     = Math.max(0, confirmed - paymentSuccess - userDropped - failed);
+        return {
+          total: Number(funnel.total),
+          confirmed,
+          paymentSuccess,
+          userDropped,
+          failed,
+          pending,
+          failedPending: failed + pending,
+        };
+      })(),
       paymentMethodBreakdown,
       paymentMethodSuccess,
       emiDetail,
@@ -489,7 +507,7 @@ function emptyMetrics() {
     monthlySeries: [], storePerformance: [],
     orderFunnel: {
       total: 0, confirmed: 0, paymentSuccess: 0,
-      userDropped: 0, failedPending: 0,
+      userDropped: 0, failed: 0, pending: 0, failedPending: 0,
     },
     paymentMethodBreakdown: [], paymentMethodSuccess: [],
     emiDetail: {

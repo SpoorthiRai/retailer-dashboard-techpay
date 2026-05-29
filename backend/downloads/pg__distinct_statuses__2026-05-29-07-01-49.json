@@ -1,0 +1,58 @@
+[
+  {
+    "payment_status": "FAILED",
+    "cashfree_payment_status": "USER_DROPPED",
+    "zype_payment_status": null,
+    "order_status": "CONFIRMED",
+    "payment_method": "CASHFREE"
+  },
+  {
+    "payment_status": "FAILED",
+    "cashfree_payment_status": null,
+    "zype_payment_status": null,
+    "order_status": "CONFIRMED",
+    "payment_method": "CASHFREE"
+  },
+  {
+    "payment_status": "SUCCESS",
+    "cashfree_payment_status": "SUCCESS",
+    "zype_payment_status": null,
+    "order_status": "CONFIRMED",
+    "payment_method": "CASHFREE"
+  },
+  {
+    "payment_status": "FAILED",
+    "cashfree_payment_status": null,
+    "zype_payment_status": null,
+    "order_status": "CONFIRMED",
+    "payment_method": "CASHFREE_ZYPE"
+  },
+  {
+    "payment_status": "PENDING",
+    "cashfree_payment_status": "SUCCESS",
+    "zype_payment_status": "LOAN_TRANSFERRED",
+    "order_status": "CONFIRMED",
+    "payment_method": "CASHFREE_ZYPE"
+  },
+  {
+    "payment_status": "PENDING",
+    "cashfree_payment_status": null,
+    "zype_payment_status": null,
+    "order_status": "PENDING",
+    "payment_method": "OFFLINE"
+  },
+  {
+    "payment_status": "FAILED",
+    "cashfree_payment_status": null,
+    "zype_payment_status": null,
+    "order_status": "PENDING",
+    "payment_method": "PAYU"
+  },
+  {
+    "payment_status": "PAID",
+    "cashfree_payment_status": null,
+    "zype_payment_status": null,
+    "order_status": "CONFIRMED",
+    "payment_method": "PAYU"
+  }
+]

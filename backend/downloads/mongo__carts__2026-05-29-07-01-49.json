@@ -1,0 +1,117 @@
+[
+  {
+    "_id": "691ab730cf680aaab05e3762",
+    "product": "6895dcbac87dc6011ca6dcab",
+    "quantity": 1,
+    "seller": "4a9d186a-b123-4dc5-8339-28b138fa8277",
+    "store": "6895dbefc87dc6011ca6dc02",
+    "createdAt": "2025-11-17T05:48:32.376Z",
+    "updatedAt": "2025-11-17T05:48:32.376Z",
+    "__v": 0
+  },
+  {
+    "_id": "693ff62dcf680aaab0600bb1",
+    "product": "6895f046c87dc6011ca6df99",
+    "quantity": 1,
+    "seller": "d9488a6a-407e-4666-a496-345afb0decec",
+    "store": "6895dbefc87dc6011ca6dc02",
+    "createdAt": "2025-12-15T11:51:09.346Z",
+    "updatedAt": "2025-12-15T11:51:09.346Z",
+    "__v": 0
+  },
+  {
+    "_id": "695b9294d0244722bf0aafc2",
+    "product": "69413ca9cf680aaab060665c",
+    "quantity": 2,
+    "seller": "b5ec90db-8cba-4804-b7cc-ba743fa5afd6",
+    "store": "694116c6cf680aaab0604138",
+    "createdAt": "2026-01-05T10:29:40.218Z",
+    "updatedAt": "2026-01-05T10:29:40.286Z",
+    "__v": 0
+  },
+  {
+    "_id": "695e072ed0244722bf0ad0aa",
+    "product": "68db78a343a00ae01ab2286c",
+    "quantity": 1,
+    "seller": "91d203b1-8b03-497e-af5f-37a3cccbe8e6",
+    "store": "68da1f9743a00ae01ab1def0",
+    "createdAt": "2026-01-07T07:11:42.185Z",
+    "updatedAt": "2026-01-07T07:11:42.185Z",
+    "__v": 0
+  },
+  {
+    "_id": "69608154d0244722bf0afc91",
+    "product": "69412a82cf680aaab0605843",
+    "quantity": 1,
+    "seller": "87eb38bf-2759-426b-b420-2d00a76dfadd",
+    "store": "694116c6cf680aaab0604138",
+    "createdAt": "2026-01-09T04:17:24.746Z",
+    "updatedAt": "2026-01-09T04:17:24.746Z",
+    "__v": 0
+  },
+  {
+    "_id": "697370970be85794647ecb58",
+    "product": "68d50987d760f8a83938ea40",
+    "quantity": 1,
+    "seller": "bdca1acf-c045-42de-89e8-8284bf435fdb",
+    "store": "68d3df2fd760f8a83938bee5",
+    "createdAt": "2026-01-23T12:59:03.763Z",
+    "updatedAt": "2026-01-23T12:59:03.763Z",
+    "__v": 0
+  },
+  {
+    "_id": "69788f7447f9e9f3e68adf3c",
+    "product": "696759e3934b5dd6a5cfc92b",
+    "quantity": 49,
+    "seller": "4c6e2c2c-b5e7-4326-8792-e44375e82bbe",
+    "store": "696a144f36894b28bd39b18e",
+    "is_cloud_inventory": false,
+    "createdAt": "2026-01-27T10:12:04.036Z",
+    "updatedAt": "2026-01-27T10:12:04.036Z",
+    "__v": 0
+  },
+  {
+    "_id": "6979bd737c30d4c5c578b915",
+    "product": "69675e1b934b5dd6a5cfc982",
+    "quantity": 1,
+    "seller": "05ba8356-ce0e-4804-8d7c-67bf6d54f38c",
+    "store": "696a144f36894b28bd39b18e",
+    "is_cloud_inventory": false,
+    "createdAt": "2026-01-28T07:40:35.482Z",
+    "updatedAt": "2026-01-28T07:40:35.482Z",
+    "__v": 0
+  },
+  {
+    "_id": "697a0b7cfb22023e701e40ee",
+    "product": "69677293934b5dd6a5cfcc97",
+    "quantity": 1,
+    "seller": "1c87c4e5-f699-45eb-91f4-b07096740fe5",
+    "store": "696a144f36894b28bd39b18e",
+    "is_cloud_inventory": true,
+    "createdAt": "2026-01-28T13:13:32.089Z",
+    "updatedAt": "2026-01-28T13:13:32.089Z",
+    "__v": 0
+  },
+  {
+    "_id": "69eface827e3bd97fef04d3d",
+    "product": "69413899cf680aaab06062ec",
+    "quantity": 1,
+    "seller": "122d2dff-7b8f-4ed9-836e-dc16b9a8f437",
+    "store": "694116c6cf680aaab0604138",
+    "is_cloud_inventory": false,
+    "createdAt": "2026-04-27T18:37:28.281Z",
+    "updatedAt": "2026-04-27T18:37:28.281Z",
+    "__v": 0
+  },
+  {
+    "_id": "6a03273d4b3b7722b56a5ecd",
+    "product": "69413ca9cf680aaab060665c",
+    "quantity": 1,
+    "seller": "69d4931f-df9e-4e48-ac5e-6a824df7fef8",
+    "store": "694116c6cf680aaab0604138",
+    "is_cloud_inventory": false,
+    "createdAt": "2026-05-12T13:12:29.796Z",
+    "updatedAt": "2026-05-12T13:12:29.796Z",
+    "__v": 0
+  }
+]

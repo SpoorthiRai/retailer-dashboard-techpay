@@ -6,8 +6,8 @@ interface Props {
   onFiltersChange: (f: Filters) => void
 }
 
-const DEFAULT_DATE_FROM = '2025-11-01'
-const DEFAULT_DATE_TO = '2026-03-31'
+const DEFAULT_DATE_FROM = '2026-05-01'
+const DEFAULT_DATE_TO = '2026-05-31'
 
 const QUICK_RANGES = [
   { label: 'All',          dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO },

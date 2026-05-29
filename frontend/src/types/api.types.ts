@@ -89,7 +89,9 @@ export interface OrderFunnel {
   confirmed: number;
   paymentSuccess: number;
   userDropped: number;
-  failedPending: number;
+  failed: number;
+  pending: number;
+  failedPending: number; // kept for backward compat (failed + pending)
 }
 
 export interface PaymentMethodBreakdown {

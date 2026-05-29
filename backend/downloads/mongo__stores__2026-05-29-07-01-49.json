@@ -1,0 +1,434 @@
+[
+  {
+    "_id": "68d3df2fd760f8a83938bee5",
+    "name": "Lenovo Products",
+    "address_line": "Koramanagala",
+    "pin_code": 560068,
+    "city": "Srinagar",
+    "state": "Jammu and Kashmir",
+    "seller": "115fe790-1260-4f7a-9207-281353ed3a8c",
+    "logo_url": "https://dev.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        30.3956215097,
+        10.3657661436
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "c75bf0c7-64a1-49dc-b022-64a8c58101b7",
+    "store_manager_name": "Meena Sharma",
+    "store_manager_email": "mbintiidris+281@gmail.com",
+    "store_manager_phone": "+916000069896",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "GLOMAH",
+    "store_code": "GLOMAHSRI002",
+    "vendor_id": "GLOMAH_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_68d3df2fd760f8a83938bee5.png",
+    "status": "inactive",
+    "store_executives": [
+      {
+        "name": "Aman Sharma",
+        "email": "aman.sharma@example.com",
+        "phone": "9123456789",
+        "_id": "68d3df2fd760f8a83938bee6"
+      },
+      {
+        "name": "Priya Mehta",
+        "email": "priya.mehta@example.com",
+        "phone": "9876501234",
+        "_id": "68d3df2fd760f8a83938bee7"
+      }
+    ],
+    "createdAt": "2025-09-24T12:08:15.973Z",
+    "updatedAt": "2025-09-24T12:08:16.251Z",
+    "__v": 0
+  },
+  {
+    "_id": "68da1f9743a00ae01ab1def0",
+    "name": "New Lenovo",
+    "address_line": "E Street, Chikkapete, 560002",
+    "pin_code": null,
+    "city": "Bengaluru",
+    "state": "KA",
+    "seller": "b7cdf4bf-bd89-4028-b8b7-7d9e0f95a26b",
+    "logo_url": "https://dev.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        77.577,
+        12.96
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "009d827a-d989-4f76-8f25-f9f0d7ab3a0f",
+    "store_manager_name": "Abhinash Sharma",
+    "store_manager_email": "abhinash@yopmail.com",
+    "store_manager_phone": "+916005218112",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "NEWKA",
+    "store_code": "NEWKABEN001",
+    "vendor_id": "NEWKA_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_68da1f9743a00ae01ab1def0.png",
+    "status": "inactive",
+    "store_executives": [
+      {
+        "name": "Nursa Jan",
+        "email": "nursa@yopmail.com",
+        "phone": "+919999995556",
+        "_id": "68da1f9743a00ae01ab1def1"
+      },
+      {
+        "name": "Rahul Verma",
+        "email": "rahul@yopmail.com",
+        "phone": "+919999997778",
+        "_id": "68da1f9743a00ae01ab1def2"
+      }
+    ],
+    "createdAt": "2025-09-29T05:56:39.585Z",
+    "updatedAt": "2025-09-29T05:56:39.758Z",
+    "__v": 0
+  },
+  {
+    "_id": "694116c6cf680aaab0604138",
+    "name": "Hp India",
+    "address_line": "Vepery High Road, CMWSSB Division 58, Zone 5 Royapuram, 600001",
+    "pin_code": null,
+    "city": "Chennai",
+    "state": "TN",
+    "seller": "1c29e950-42b0-4086-8641-963edb507164",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        80.2705,
+        13.0843
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "7614ac5d-cdb3-4d3f-ac08-7c13f9db0598",
+    "store_manager_name": "Aadil",
+    "store_manager_email": "aadil123@yopmail.com",
+    "store_manager_phone": "+919906713288",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "HPITN",
+    "store_code": "HPITNCHE001",
+    "vendor_id": "HPITN_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_694116c6cf680aaab0604138.png",
+    "status": "active",
+    "store_executives": [],
+    "createdAt": "2025-12-16T08:22:30.069Z",
+    "updatedAt": "2025-12-16T08:22:30.253Z",
+    "__v": 0,
+    "payu_mid": "9206311"
+  },
+  {
+    "_id": "695f8530d0244722bf0ae1c9",
+    "name": "Getafix Technologies Pvt. Ltd.",
+    "address_line": "Test name",
+    "pin_code": null,
+    "city": "Abhaneri",
+    "state": "RJ",
+    "seller": "d7cf8ff6-752b-42b1-af07-de5a0bd6f186",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        74,
+        25
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "1d9f9851-5f8d-408a-bd7a-911fcb4f0590",
+    "store_manager_name": "Jane Doe",
+    "store_manager_email": "jane@yopmail.com",
+    "store_manager_phone": "+916005150288",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "GETRJ",
+    "store_code": "GETRJABH001",
+    "vendor_id": "GETRJ_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_695f8530d0244722bf0ae1c9.png",
+    "status": "active",
+    "store_executives": [],
+    "createdAt": "2026-01-08T10:21:36.932Z",
+    "updatedAt": "2026-01-08T10:21:37.073Z",
+    "__v": 0
+  },
+  {
+    "_id": "696a144f36894b28bd39b18e",
+    "name": "HP Dam Products",
+    "address_line": "Urban Estate Gurugram, Haryana ",
+    "pin_code": 122001,
+    "city": "Gurugram",
+    "state": "Haryana",
+    "seller": "d7cf8ff6-752b-42b1-af07-de5a0bd6f186",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        77,
+        28
+      ]
+    },
+    "type": "CLOUD_INVENTORY",
+    "store_manager": "741a3009-4604-4463-aceb-f91ec3855d85",
+    "store_manager_name": "HP Manager",
+    "store_manager_email": "mahyah.i+281@getafixtechnologies.com",
+    "store_manager_phone": "+916005125458",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 AM",
+    "company_code": "GETRJ",
+    "store_code": "GETRJGUR002",
+    "vendor_id": "GETRJ_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_696a144f36894b28bd39b18e.png",
+    "status": "active",
+    "store_executives": [],
+    "createdAt": "2026-01-16T10:34:55.551Z",
+    "updatedAt": "2026-01-16T10:34:55.688Z",
+    "__v": 0
+  },
+  {
+    "_id": "69750a2a5983846ed2bb4e7c",
+    "name": "Initiative Data Systems Pvt Ltd",
+    "address_line": "Urban Estate Gurugram, Haryana ",
+    "pin_code": 122001,
+    "city": "Gurugram",
+    "state": "Haryana",
+    "seller": "d7cf8ff6-752b-42b1-af07-de5a0bd6f186",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        77,
+        28
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "76bbf35b-e6f2-4705-b629-c43fbe949d00",
+    "store_manager_name": "Mahyah Test",
+    "store_manager_email": "mahyah.i+512@getafixtechnologies.com",
+    "store_manager_phone": "+916005211178",
+    "store_opening_time": "10:00 AM",
+    "store_closing_time": "10:00 AM",
+    "company_code": "GETRJ",
+    "store_code": "GETRJGUR003",
+    "vendor_id": "GETRJ_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_69750a2a5983846ed2bb4e7c.png",
+    "status": "active",
+    "country": "IN",
+    "store_executives": [],
+    "createdAt": "2026-01-24T18:06:34.697Z",
+    "updatedAt": "2026-01-24T18:06:36.792Z",
+    "__v": 0,
+    "alternate_store_code_hp": "2-SIUD-10683",
+    "store_code_hp": "377"
+  },
+  {
+    "_id": "69796a9f54c43a3e763a968f",
+    "name": "AADI COMPUTECH - Sec -14",
+    "address_line": "Sector 14, Sector 13, 122001",
+    "pin_code": null,
+    "city": "Gurgaon",
+    "state": "HR",
+    "seller": "6428d7bc-e0f2-4f4a-977d-98a238cb510e",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        77.045593,
+        28.476757
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "8f06007d-2476-4a22-b9c5-c635895ae1af",
+    "store_manager_name": "Srikant",
+    "store_manager_email": "bhat.asif16+1@gmai.com",
+    "store_manager_phone": "+916006218151",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "AADHR",
+    "store_code": "AADHRGUR001",
+    "vendor_id": "AADHR_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_69796a9f54c43a3e763a968f.png",
+    "status": "active",
+    "country": "IN",
+    "store_executives": [
+      {
+        "name": "Ronak",
+        "email": "bhat.asif16+1@gmai.com",
+        "phone": "+919731977556",
+        "_id": "69796a9f54c43a3e763a9690"
+      }
+    ],
+    "createdAt": "2026-01-28T01:47:11.955Z",
+    "updatedAt": "2026-01-28T01:47:12.563Z",
+    "__v": 0,
+    "alternate_store_code_hp": "991000710718",
+    "store_code_hp": "125"
+  },
+  {
+    "_id": "6979fc3efb22023e701e38e9",
+    "name": "SUNRISE INFOTECH",
+    "address_line": "RAILWAY ROAD, NEAR NIRANKARI BHAWAN, 131001",
+    "pin_code": null,
+    "city": "Sonipat",
+    "state": "HR",
+    "seller": "bc5c6bb6-998d-44f4-87dc-5679dfba83ea",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        77.020427,
+        28.992173
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "0881a6e7-5c97-4386-b941-82b1d975d11d",
+    "store_manager_name": "Sanjiv saroha",
+    "store_manager_email": "bhat.asif16+8@gmail.com",
+    "store_manager_phone": "+917655432234",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "SUNHR",
+    "store_code": "SUNHRSON001",
+    "vendor_id": "SUNHR_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_6979fc3efb22023e701e38e9.png",
+    "status": "active",
+    "country": "IN",
+    "store_executives": [
+      {
+        "name": "Sanjiv saroha",
+        "email": "bhat.asif16+9@gmail.com",
+        "phone": "+918796543123",
+        "_id": "6979fc3efb22023e701e38ea"
+      }
+    ],
+    "createdAt": "2026-01-28T12:08:30.873Z",
+    "updatedAt": "2026-01-28T12:08:31.594Z",
+    "__v": 0,
+    "alternate_store_code_hp": "2-SIUD-12418",
+    "store_code_hp": "335"
+  },
+  {
+    "_id": "697a06c8fb22023e701e3de2",
+    "name": "VS ELECTRONICS",
+    "address_line": "G-29, VISHWADDEEP TOWER , JANAKPURI,Ring Road, Janakpuri, 110058",
+    "pin_code": null,
+    "city": "Delhi",
+    "state": "DL",
+    "seller": "bebfbc28-4d35-40b7-99ee-731c139ac682",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        77.080599,
+        28.62969
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "e2cb4e4d-c73b-429d-92da-814a73fa4ab2",
+    "store_manager_name": "mohit gupta",
+    "store_manager_email": "tarun.s@techpay.ai",
+    "store_manager_phone": "+917899765123",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "VSEDL",
+    "store_code": "VSEDLDEL001",
+    "vendor_id": "VSEDL_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_697a06c8fb22023e701e3de2.png",
+    "status": "active",
+    "country": "IN",
+    "store_executives": [
+      {
+        "name": "SURAJ",
+        "email": "bhat.asif16+13@gmail.com",
+        "phone": "+917866543123",
+        "_id": "697a06c8fb22023e701e3de3"
+      }
+    ],
+    "createdAt": "2026-01-28T12:53:28.266Z",
+    "updatedAt": "2026-01-28T12:53:28.320Z",
+    "__v": 0,
+    "warehouse_id": "GRG"
+  },
+  {
+    "_id": "699eeafa68e46cfa4b7e17f8",
+    "name": "Asif Technologies",
+    "address_line": "Gopalpura, 560023",
+    "pin_code": null,
+    "city": "Bengaluru",
+    "state": "KA",
+    "seller": "e49ee3ed-09a6-4904-98bf-4c7c501b71b1",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        77.5594568396,
+        12.9738645396
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "3140fd04-f3bd-45e6-9d15-f1da3018a349",
+    "store_manager_name": "Aadil",
+    "store_manager_email": "in.adm.store@yopmail.com",
+    "store_manager_phone": "+919123456704",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "ASIKA",
+    "store_code": "ASIKABEN001",
+    "vendor_id": "ASIKA_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_699eeafa68e46cfa4b7e17f8.png",
+    "status": "active",
+    "country": "IN",
+    "store_executives": [
+      {
+        "name": "Faizal",
+        "email": "in.adm.storeexc@yopmail.com",
+        "phone": "+919123456702",
+        "_id": "699eeafa68e46cfa4b7e17f9"
+      }
+    ],
+    "createdAt": "2026-02-25T12:28:42.126Z",
+    "updatedAt": "2026-02-25T12:28:42.173Z",
+    "__v": 0,
+    "warehouse_id": "GRG"
+  },
+  {
+    "_id": "69e90ee51914179938d0588e",
+    "name": "Apple Store",
+    "address_line": "Uttar Pradesh",
+    "pin_code": 201102,
+    "city": "Ghaziabad",
+    "state": "UP",
+    "seller": "4bb38311-9aea-473f-a651-4c7443beacff",
+    "logo_url": "https://uat.techpay.ai/static/default_store.png",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        77.3001584272,
+        28.7798511273
+      ]
+    },
+    "type": "RETAIL",
+    "store_manager": "95fea3dd-2976-4469-898f-9fac00a635de",
+    "store_manager_name": "John Doe",
+    "store_manager_email": "mahyah.i+applemanager@getafixtechnologies.com",
+    "store_manager_phone": "+916005214785",
+    "store_opening_time": "09:00 AM",
+    "store_closing_time": "09:00 PM",
+    "company_code": "APPUP",
+    "store_code": "APPUPGHA001",
+    "vendor_id": "APPUP_VEN",
+    "qr_code_url": "https://uat.techpay.ai/uploads/store_69e90ee51914179938d0588e.png",
+    "status": "active",
+    "country": "IN",
+    "store_executives": [],
+    "createdAt": "2026-04-22T18:09:41.507Z",
+    "updatedAt": "2026-04-22T18:09:41.609Z",
+    "__v": 0
+  }
+]

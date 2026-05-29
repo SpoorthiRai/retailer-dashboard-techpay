@@ -12,29 +12,39 @@ const DEMO_USERS: Record<string, AuthUser & { password: string }> = {
     email: 'disti@techpay.ai',
     storeIds: [],
   },
-  'retailer@techpay.ai': {
+  'aadicomputech.retailer@techpay.ai': {
     password: 'demo123',
     role: 'retailer',
-    name: 'HP Retail Partner',
-    email: 'retailer@techpay.ai',
-    storeIds: ['694116c6cf680aaab0604138', '69796a9f54c43a3e763a968f'],
+    name: 'Aadi Computech Retail',
+    email: 'aadicomputech.retailer@techpay.ai',
+    storeIds: [
+      '69796a9f54c43a3e763a968f', // AADI COMPUTECH - Sec -14
+      '69799a9f54c43a3e763a9690', // AADI COMPUTECH - Sec 16
+      '6979ba9f54c43a3e763a9691', // AADI COMPUTECH - Sec 17
+    ],
   },
-  'store@techpay.ai': {
+  'aadicomputechsec14.store@techpay.ai': {
     password: 'demo123',
     role: 'store_manager',
-    name: 'HP India Manager',
-    email: 'store@techpay.ai',
-    storeIds: ['694116c6cf680aaab0604138'],
-    storeName: 'HP India, Chennai',
+    name: 'Srikant (Sec -14)',
+    email: 'aadicomputechsec14.store@techpay.ai',
+    storeIds: ['69796a9f54c43a3e763a968f'],
+    storeName: 'AADI COMPUTECH - Sec -14',
   },
 }
+
+const AADI_STORE_NAMES = [
+  'AADI COMPUTECH - Sec -14',
+  'AADI COMPUTECH - Sec 16',
+  'AADI COMPUTECH - Sec 17',
+]
 
 const DEFAULT_FILTERS: Filters = {
   state: [],
   city: [],
   store: [],
-  dateFrom: '2025-11-01',
-  dateTo: '2026-03-31',
+  dateFrom: '2026-05-01',
+  dateTo: '2026-05-30',
 }
 
 export default function App() {
@@ -51,7 +61,15 @@ export default function App() {
     }
     const { password: _p, ...authUser } = found
     setUser(authUser)
-    setRetailerInitialFilters(loginFilters)
+    // Retailer: always scope to their 3 Aadi stores — login has no filter UI
+    // Store manager: always scope to their own store
+    let effectiveFilters = loginFilters
+    if (authUser.role === 'retailer') {
+      effectiveFilters = { state: [], city: [], store: AADI_STORE_NAMES }
+    } else if (authUser.role === 'store_manager' && authUser.storeName) {
+      effectiveFilters = { state: [], city: [], store: [authUser.storeName] }
+    }
+    setRetailerInitialFilters(effectiveFilters)
     setLoginError('')
   }
 

@@ -36,7 +36,7 @@ const ROLES = [
     description: 'Monitor store network performance, track orders, and view payment insights.',
     icon: '🏪',
     color: '#2E86C1',
-    email: 'retailer@techpay.ai',
+    email: 'aadicomputech.retailer@techpay.ai',
     password: 'demo123',
     features: [
       { icon: '📈', label: 'Network-wide performance' },
@@ -50,7 +50,7 @@ const ROLES = [
     description: "View your store's performance, inventory levels, and order activity.",
     icon: '👤',
     color: '#1A8C7A',
-    email: 'store@techpay.ai',
+    email: 'aadicomputechsec14.store@techpay.ai',
     password: 'demo123',
     features: [
       { icon: '📦', label: 'Store-level inventory' },
@@ -157,9 +157,7 @@ export default function LoginPage({ onLogin, error }: Props) {
   }
 
   const selected = ROLES.find(r => r.id === selectedRole)
-  const showMultiFilters  = selectedRole === 'retailer'
-  const showSingleFilters = selectedRole === 'store_manager'
-  const showAnyFilters    = showMultiFilters || showSingleFilters
+  const showAnyFilters = false
 
   // ── Role selection screen ────────────────────────────────────
   if (!selectedRole) {
@@ -247,7 +245,7 @@ export default function LoginPage({ onLogin, error }: Props) {
   // ── Login form screen ────────────────────────────────────────
   return (
     <div className="login-form-bg min-h-screen flex flex-col items-center justify-center p-6">
-      <div className={`w-full ${showAnyFilters ? 'max-w-lg' : 'max-w-sm'}`}>
+      <div className="w-full max-w-sm">
 
         {/* Back button */}
         <button
@@ -283,130 +281,6 @@ export default function LoginPage({ onLogin, error }: Props) {
                 </div>
               </div>
 
-              {/* ── Multi-select filters — Retail Partner ── */}
-              {showMultiFilters && (
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-1 h-3.5 bg-[#2E86C1] rounded-full" />
-                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
-                      Filter your view
-                    </span>
-                  </div>
-
-                  {!filterOptions ? (
-                    <div className="grid grid-cols-3 gap-3">
-                      {['States', 'Cities', 'Stores'].map(l => (
-                        <div key={l} className="h-10 bg-gray-100 rounded-xl animate-pulse" />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div>
-                        <label className="text-xs text-gray-400 mb-1.5 block">States</label>
-                        <MultiSelect label="States" options={filterOptions.states}
-                          selected={loginFilters.state} onChange={handleMultiStateChange} variant="light" />
-                      </div>
-                      <div>
-                        <label className="text-xs text-gray-400 mb-1.5 block">Cities</label>
-                        <MultiSelect label="Cities" options={multiAvailableCities}
-                          selected={loginFilters.city} onChange={handleMultiCityChange} variant="light" />
-                      </div>
-                      <div>
-                        <label className="text-xs text-gray-400 mb-1.5 block">Stores</label>
-                        <MultiSelect label="Stores" options={multiAvailableStores}
-                          selected={loginFilters.store}
-                          onChange={s => setLoginFilters(f => ({ ...f, store: s }))} variant="light" />
-                      </div>
-                    </div>
-                  )}
-
-                  {(loginFilters.state.length > 0 || loginFilters.city.length > 0 || loginFilters.store.length > 0) && (
-                    <div className="mt-2.5 flex flex-wrap gap-1.5">
-                      {loginFilters.state.map(s => (
-                        <span key={s} className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">{s}</span>
-                      ))}
-                      {loginFilters.city.map(c => (
-                        <span key={c} className="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">{c}</span>
-                      ))}
-                      {loginFilters.store.map(s => (
-                        <span key={s} className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">{s}</span>
-                      ))}
-                      <button onClick={() => setLoginFilters({ state: [], city: [], store: [] })}
-                        className="text-xs text-gray-300 hover:text-red-400 transition-colors">
-                        Clear all
-                      </button>
-                    </div>
-                  )}
-                  <p className="text-xs text-gray-300 mt-2">Leave all at "All" to see the full network</p>
-                </div>
-              )}
-
-              {/* ── Single-select filters — Store Manager ── */}
-              {showSingleFilters && (
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-1 h-3.5 bg-[#1A8C7A] rounded-full" />
-                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
-                      Select your view
-                    </span>
-                  </div>
-
-                  {!filterOptions ? (
-                    <div className="grid grid-cols-3 gap-3">
-                      {['State', 'City', 'Store'].map(l => (
-                        <div key={l} className="h-10 bg-gray-100 rounded-xl animate-pulse" />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div>
-                        <label className="text-xs text-gray-400 mb-1.5 block">State</label>
-                        <div className="relative">
-                          <select value={loginFilters.state[0] ?? ''} onChange={e => handleSingleStateChange(e.target.value)} className={selectClass}>
-                            <option value="">All States</option>
-                            {filterOptions.states.map(s => <option key={s} value={s}>{s}</option>)}
-                          </select>
-                          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">▼</span>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-xs text-gray-400 mb-1.5 block">City</label>
-                        <div className="relative">
-                          <select value={loginFilters.city[0] ?? ''} onChange={e => handleSingleCityChange(e.target.value)} className={selectClass} disabled={singleAvailableCities.length === 0}>
-                            <option value="">All Cities</option>
-                            {singleAvailableCities.map(c => <option key={c} value={c}>{c}</option>)}
-                          </select>
-                          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">▼</span>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-xs text-gray-400 mb-1.5 block">Store</label>
-                        <div className="relative">
-                          <select value={loginFilters.store[0] ?? ''} onChange={e => handleSingleStoreChange(e.target.value)} className={selectClass} disabled={singleAvailableStores.length === 0}>
-                            <option value="">All Stores</option>
-                            {singleAvailableStores.map(s => <option key={s} value={s}>{s}</option>)}
-                          </select>
-                          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">▼</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {(loginFilters.state.length > 0 || loginFilters.city.length > 0 || loginFilters.store.length > 0) && (
-                    <div className="mt-2.5 flex flex-wrap gap-1.5">
-                      {loginFilters.state[0] && <span className="text-xs bg-teal-50 text-teal-600 px-2 py-0.5 rounded-full">{loginFilters.state[0]}</span>}
-                      {loginFilters.city[0] && <span className="text-xs bg-teal-50 text-teal-600 px-2 py-0.5 rounded-full">{loginFilters.city[0]}</span>}
-                      {loginFilters.store[0] && <span className="text-xs bg-teal-50 text-teal-600 px-2 py-0.5 rounded-full">{loginFilters.store[0]}</span>}
-                      <button onClick={() => setLoginFilters({ state: [], city: [], store: [] })}
-                        className="text-xs text-gray-300 hover:text-red-400 transition-colors">Clear</button>
-                    </div>
-                  )}
-                  <p className="text-xs text-gray-300 mt-2">Leave at "All" to see data across the network</p>
-                </div>
-              )}
-
-              {/* Divider */}
-              {showAnyFilters && <div className="border-t border-gray-100 mb-6" />}
 
               {/* Credentials */}
               <div className="space-y-4">
