@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useFilterOptions } from '@/hooks/useApi'
-import MultiSelect from '@/components/dashboard/MultiSelect'
 
 interface LoginFilters {
   state: string[]
@@ -77,11 +76,6 @@ function IconLock() {
     </svg>
   )
 }
-
-const selectClass = `w-full px-3 py-2.5 border border-gray-200 rounded-xl
-  text-sm text-[#1C2B3A] bg-white focus:outline-none
-  focus:ring-2 focus:ring-purple-300 focus:border-transparent
-  cursor-pointer transition-all appearance-none`
 
 export default function LoginPage({ onLogin, error }: Props) {
   const [selectedRole, setSelectedRole] = useState<SelectedRole>(null)
