@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useFilterOptions } from '@/hooks/useApi'
 
 interface LoginFilters {
   state: string[]
@@ -83,58 +82,6 @@ export default function LoginPage({ onLogin, error }: Props) {
   const [password, setPassword] = useState('')
   const [loginFilters, setLoginFilters] = useState<LoginFilters>({ state: [], city: [], store: [] })
 
-  const { data: filterOptions } = useFilterOptions()
-
-  // ── Retailer: multi-select cascading ────────────────────────
-  const multiAvailableCities = loginFilters.state.length > 0 && filterOptions
-    ? [...new Set(loginFilters.state.flatMap(s => filterOptions.stateToCities[s] || []))]
-    : filterOptions?.cities ?? []
-
-  const multiAvailableStores = loginFilters.city.length > 0 && filterOptions
-    ? [...new Set(loginFilters.city.flatMap(c => filterOptions.cityToStores[c] || []))]
-    : filterOptions?.stores ?? []
-
-  function handleMultiStateChange(selected: string[]) {
-    if (!filterOptions) return
-    const validCities = selected.length > 0
-      ? [...new Set(selected.flatMap(s => filterOptions.stateToCities[s] || []))]
-      : filterOptions.cities
-    const newCities = loginFilters.city.filter(c => validCities.includes(c))
-    const validStores = newCities.length > 0
-      ? [...new Set(newCities.flatMap(c => filterOptions.cityToStores[c] || []))]
-      : filterOptions.stores
-    const newStores = loginFilters.store.filter(s => validStores.includes(s))
-    setLoginFilters({ state: selected, city: newCities, store: newStores })
-  }
-
-  function handleMultiCityChange(selected: string[]) {
-    if (!filterOptions) return
-    const validStores = selected.length > 0
-      ? [...new Set(selected.flatMap(c => filterOptions.cityToStores[c] || []))]
-      : filterOptions.stores
-    const newStores = loginFilters.store.filter(s => validStores.includes(s))
-    setLoginFilters({ ...loginFilters, city: selected, store: newStores })
-  }
-
-  // ── Store Manager: single-select cascading ───────────────────
-  const singleAvailableCities = loginFilters.state[0] && filterOptions
-    ? (filterOptions.stateToCities[loginFilters.state[0]] ?? [])
-    : filterOptions?.cities ?? []
-
-  const singleAvailableStores = loginFilters.city[0] && filterOptions
-    ? (filterOptions.cityToStores[loginFilters.city[0]] ?? [])
-    : filterOptions?.stores ?? []
-
-  function handleSingleStateChange(value: string) {
-    setLoginFilters({ state: value ? [value] : [], city: [], store: [] })
-  }
-  function handleSingleCityChange(value: string) {
-    setLoginFilters(f => ({ ...f, city: value ? [value] : [], store: [] }))
-  }
-  function handleSingleStoreChange(value: string) {
-    setLoginFilters(f => ({ ...f, store: value ? [value] : [] }))
-  }
-
   // ── Shared ───────────────────────────────────────────────────
   function handleRoleSelect(role: typeof ROLES[0]) {
     setSelectedRole(role.id)
@@ -151,7 +98,6 @@ export default function LoginPage({ onLogin, error }: Props) {
   }
 
   const selected = ROLES.find(r => r.id === selectedRole)
-  const showAnyFilters = false
 
   // ── Role selection screen ────────────────────────────────────
   if (!selectedRole) {
