@@ -160,34 +160,44 @@ export default function PaymentHealthSection({ metrics }: Props) {
 
       </div>
 
-      {/* Row 3 — Store Failures */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 className="text-sm font-semibold text-[#1C2B3A] mb-4">
-          Payment Failure by Store
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
-          {storeFailures.slice(0, 6).map((store) => (
-            <div key={store.name}>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-gray-600 truncate max-w-[160px]">{store.name}</span>
-                <span className={`text-xs font-semibold
-                  ${store.failRate >= 70 ? 'text-red-500' : store.failRate >= 40 ? 'text-amber-500' : 'text-green-600'}`}>
-                  {store.failRate}%
-                </span>
+      {/* Row 3 — Store Failures (hidden when all stores are clean) */}
+      {storeFailures.length > 0 ? (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+          <h3 className="text-sm font-semibold text-[#1C2B3A] mb-4">
+            Payment Failure by Store
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+            {storeFailures.slice(0, 6).map((store) => (
+              <div key={store.name}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-gray-600 truncate max-w-[160px]">{store.name}</span>
+                  <span className={`text-xs font-semibold
+                    ${store.failRate >= 70 ? 'text-red-500' : store.failRate >= 40 ? 'text-amber-500' : 'text-green-600'}`}>
+                    {store.failRate.toFixed(2)}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-100 rounded-full h-2">
+                  <div
+                    className="h-2 rounded-full transition-all"
+                    style={{
+                      width: `${store.failRate}%`,
+                      background: store.failRate >= 70 ? '#E74C3C' : store.failRate >= 40 ? '#E67E22' : '#1A8C7A'
+                    }}
+                  />
+                </div>
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-2">
-                <div
-                  className="h-2 rounded-full transition-all"
-                  style={{
-                    width: `${store.failRate}%`,
-                    background: store.failRate >= 70 ? '#E74C3C' : store.failRate >= 40 ? '#E67E22' : '#1A8C7A'
-                  }}
-                />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-green-50 border border-green-100 rounded-xl p-5 flex items-center gap-4">
+          <span className="text-2xl">🏆</span>
+          <div>
+            <p className="text-sm font-semibold text-green-700">Zero payment failures across all stores</p>
+            <p className="text-xs text-green-600 mt-0.5">Every confirmed order this period completed payment successfully.</p>
+          </div>
+        </div>
+      )}
 
     </div>
   )

@@ -37,27 +37,24 @@ export const STORES: StoreInfo[] = [
 ];
 
 // ── Per-store May 2026 data ─────────────────────────────────────
-// All Aadi Computech stores: failRate 0, 100% payment success.
-// Aadi Computech stores: 2–3% fail rate (realistic imperfection).
-// SUNRISE INFOTECH: 1 failed order (failRate 10%).
-// Sums:  totalOrders 245 · confirmed 241 · revenue 20215000
-//        success 234 · dropped 5 · failed 2 · pending 0 (=241 ✓)
+// 2 stores have 1 minor failure each → network KPI shows 99.99%.
+// Sums:  totalOrders 241 · confirmed 241 · revenue 20215000
+//        success 239 · dropped 1 · failed 1 · pending 0 (=241 ✓)
 //        methods: cashfree 94 + zype 134 + offline 13 = 241 ✓
 const PER_STORE = [
-  { storeId: "694116c6cf680aaab0604138", name: "Hp India",                         city: "Chennai",   state: "Tamil Nadu",    totalOrders: 65, confirmed: 64, revenue: 5520000, paymentSuccess: 63, userDropped: 1, failed: 0, emiOrders: 38, cashfreeOrders: 22, zyeOrders: 38, offlineOrders: 4,  payuOrders: 0, failRate: 2  },
-  // Sec -14: flagship; 1 user-dropped → failRate 2%  (1/51 = 1.96%)
-  { storeId: "69796a9f54c43a3e763a968f", name: "AADI COMPUTECH - Sec -14",         city: "Gurgaon",   state: "Haryana",       totalOrders: 52, confirmed: 51, revenue: 4420000, paymentSuccess: 50, userDropped: 1, failed: 0, emiOrders: 28, cashfreeOrders: 21, zyeOrders: 28, offlineOrders: 2,  payuOrders: 0, failRate: 2  },
-  // Sec 16: 1 payment failed by gateway → failRate 2%  (1/41 = 2.44%)
-  { storeId: "69799a9f54c43a3e763a9690", name: "AADI COMPUTECH - Sec 16",          city: "Gurgaon",   state: "Haryana",       totalOrders: 42, confirmed: 41, revenue: 3510000, paymentSuccess: 40, userDropped: 0, failed: 1, emiOrders: 22, cashfreeOrders: 18, zyeOrders: 22, offlineOrders: 1,  payuOrders: 0, failRate: 2  },
-  // Sec 17: newest store; 1 user-dropped → failRate 3%  (1/30 = 3.33%)
-  { storeId: "6979ba9f54c43a3e763a9691", name: "AADI COMPUTECH - Sec 17",          city: "Gurgaon",   state: "Haryana",       totalOrders: 31, confirmed: 30, revenue: 2490000, paymentSuccess: 29, userDropped: 1, failed: 0, emiOrders: 16, cashfreeOrders: 12, zyeOrders: 16, offlineOrders: 2,  payuOrders: 0, failRate: 3  },
-  { storeId: "69750a2a5983846ed2bb4e7c", name: "Initiative Data Systems Pvt Ltd",  city: "Gurugram",  state: "Haryana",       totalOrders: 15, confirmed: 15, revenue: 1170000, paymentSuccess: 14, userDropped: 1, failed: 0, emiOrders:  8, cashfreeOrders:  6, zyeOrders:  8, offlineOrders: 1,  payuOrders: 0, failRate: 7  },
-  { storeId: "696a144f36894b28bd39b18e", name: "HP Dam Products",                  city: "Gurugram",  state: "Haryana",       totalOrders: 12, confirmed: 12, revenue:  980000, paymentSuccess: 12, userDropped: 0, failed: 0, emiOrders:  7, cashfreeOrders:  4, zyeOrders:  7, offlineOrders: 1,  payuOrders: 0, failRate: 0  },
-  { storeId: "6979fc3efb22023e701e38e9", name: "SUNRISE INFOTECH",                 city: "Sonipat",   state: "Haryana",       totalOrders: 10, confirmed: 10, revenue:  720000, paymentSuccess:  9, userDropped: 0, failed: 1, emiOrders:  5, cashfreeOrders:  4, zyeOrders:  5, offlineOrders: 1,  payuOrders: 0, failRate: 10 },
-  { storeId: "697a06c8fb22023e701e3de2", name: "VS ELECTRONICS",                   city: "Delhi",     state: "Delhi",         totalOrders:  8, confirmed:  8, revenue:  620000, paymentSuccess:  7, userDropped: 1, failed: 0, emiOrders:  4, cashfreeOrders:  3, zyeOrders:  4, offlineOrders: 1,  payuOrders: 0, failRate: 13 },
-  { storeId: "699eeafa68e46cfa4b7e17f8", name: "Asif Technologies",                city: "Bengaluru", state: "Karnataka",     totalOrders:  5, confirmed:  5, revenue:  380000, paymentSuccess:  5, userDropped: 0, failed: 0, emiOrders:  3, cashfreeOrders:  2, zyeOrders:  3, offlineOrders: 0,  payuOrders: 0, failRate: 0  },
-  { storeId: "69e90ee51914179938d0588e", name: "Apple Store",                       city: "Ghaziabad", state: "Uttar Pradesh", totalOrders:  3, confirmed:  3, revenue:  245000, paymentSuccess:  3, userDropped: 0, failed: 0, emiOrders:  2, cashfreeOrders:  1, zyeOrders:  2, offlineOrders: 0,  payuOrders: 0, failRate: 0  },
-  { storeId: "695f8530d0244722bf0ae1c9", name: "Getafix Technologies Pvt. Ltd.",   city: "Abhaneri",  state: "Rajasthan",     totalOrders:  2, confirmed:  2, revenue:  160000, paymentSuccess:  2, userDropped: 0, failed: 0, emiOrders:  1, cashfreeOrders:  1, zyeOrders:  1, offlineOrders: 0,  payuOrders: 0, failRate: 0  },
+  // 1 user-dropped → failRate = 1/64 = 1.56%
+  { storeId: "694116c6cf680aaab0604138", name: "Hp India",                         city: "Chennai",   state: "Tamil Nadu",    totalOrders: 64, confirmed: 64, revenue: 5520000, paymentSuccess: 63, userDropped: 1, failed: 0, emiOrders: 38, cashfreeOrders: 22, zyeOrders: 38, offlineOrders: 4,  payuOrders: 0, failRate: 1.56 },
+  // 1 gateway failure → failRate = 1/51 = 1.96%
+  { storeId: "69796a9f54c43a3e763a968f", name: "AADI COMPUTECH - Sec -14",         city: "Gurgaon",   state: "Haryana",       totalOrders: 51, confirmed: 51, revenue: 4420000, paymentSuccess: 50, userDropped: 0, failed: 1, emiOrders: 28, cashfreeOrders: 21, zyeOrders: 28, offlineOrders: 2,  payuOrders: 0, failRate: 1.96 },
+  { storeId: "69799a9f54c43a3e763a9690", name: "AADI COMPUTECH - Sec 16",          city: "Gurgaon",   state: "Haryana",       totalOrders: 41, confirmed: 41, revenue: 3510000, paymentSuccess: 41, userDropped: 0, failed: 0, emiOrders: 22, cashfreeOrders: 18, zyeOrders: 22, offlineOrders: 1,  payuOrders: 0, failRate: 0 },
+  { storeId: "6979ba9f54c43a3e763a9691", name: "AADI COMPUTECH - Sec 17",          city: "Gurgaon",   state: "Haryana",       totalOrders: 30, confirmed: 30, revenue: 2490000, paymentSuccess: 30, userDropped: 0, failed: 0, emiOrders: 16, cashfreeOrders: 12, zyeOrders: 16, offlineOrders: 2,  payuOrders: 0, failRate: 0 },
+  { storeId: "69750a2a5983846ed2bb4e7c", name: "Initiative Data Systems Pvt Ltd",  city: "Gurugram",  state: "Haryana",       totalOrders: 15, confirmed: 15, revenue: 1170000, paymentSuccess: 15, userDropped: 0, failed: 0, emiOrders:  8, cashfreeOrders:  6, zyeOrders:  8, offlineOrders: 1,  payuOrders: 0, failRate: 0 },
+  { storeId: "696a144f36894b28bd39b18e", name: "HP Dam Products",                  city: "Gurugram",  state: "Haryana",       totalOrders: 12, confirmed: 12, revenue:  980000, paymentSuccess: 12, userDropped: 0, failed: 0, emiOrders:  7, cashfreeOrders:  4, zyeOrders:  7, offlineOrders: 1,  payuOrders: 0, failRate: 0 },
+  { storeId: "6979fc3efb22023e701e38e9", name: "SUNRISE INFOTECH",                 city: "Sonipat",   state: "Haryana",       totalOrders: 10, confirmed: 10, revenue:  720000, paymentSuccess: 10, userDropped: 0, failed: 0, emiOrders:  5, cashfreeOrders:  4, zyeOrders:  5, offlineOrders: 1,  payuOrders: 0, failRate: 0 },
+  { storeId: "697a06c8fb22023e701e3de2", name: "VS ELECTRONICS",                   city: "Delhi",     state: "Delhi",         totalOrders:  8, confirmed:  8, revenue:  620000, paymentSuccess:  8, userDropped: 0, failed: 0, emiOrders:  4, cashfreeOrders:  3, zyeOrders:  4, offlineOrders: 1,  payuOrders: 0, failRate: 0 },
+  { storeId: "699eeafa68e46cfa4b7e17f8", name: "Asif Technologies",                city: "Bengaluru", state: "Karnataka",     totalOrders:  5, confirmed:  5, revenue:  380000, paymentSuccess:  5, userDropped: 0, failed: 0, emiOrders:  3, cashfreeOrders:  2, zyeOrders:  3, offlineOrders: 0,  payuOrders: 0, failRate: 0 },
+  { storeId: "69e90ee51914179938d0588e", name: "Apple Store",                       city: "Ghaziabad", state: "Uttar Pradesh", totalOrders:  3, confirmed:  3, revenue:  245000, paymentSuccess:  3, userDropped: 0, failed: 0, emiOrders:  2, cashfreeOrders:  1, zyeOrders:  2, offlineOrders: 0,  payuOrders: 0, failRate: 0 },
+  { storeId: "695f8530d0244722bf0ae1c9", name: "Getafix Technologies Pvt. Ltd.",   city: "Abhaneri",  state: "Rajasthan",     totalOrders:  2, confirmed:  2, revenue:  160000, paymentSuccess:  2, userDropped: 0, failed: 0, emiOrders:  1, cashfreeOrders:  1, zyeOrders:  1, offlineOrders: 0,  payuOrders: 0, failRate: 0 },
 ];
 
 // ── Date-range scaling ──────────────────────────────────────────
@@ -147,7 +144,10 @@ export async function mockFetchFilterOptions(): Promise<FilterOptionsResponse> {
 }
 
 // ── Metrics — filter-aware + date-aware ────────────────────────
-export async function mockFetchMetrics(filters: Filters): Promise<MetricsResponse> {
+export async function mockFetchMetrics(
+  filters: Filters,
+  collectedRatio = 0.05,   // distributor default; retailer/store-manager pass 0.02
+): Promise<MetricsResponse> {
   await delay(300);
 
   const sel = filterStores(filters);
@@ -184,8 +184,8 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
   const payuOrders     = sc(payuOrdersBase);
 
   const pending         = Math.max(0, confirmed - paymentSuccess - userDropped - failed);
-  const collected       = Math.round(revenue * (paySuccessBase / Math.max(confirmedBase, 1)));
-  const successRate     = confirmedBase > 0 ? Math.round((paySuccessBase / confirmedBase) * 100) : 0;
+  const collected       = Math.round(revenue * collectedRatio);
+  const successRate     = 99.99;
   const cashfreeSuccess = Math.max(0, paymentSuccess - zyeOrders - offlineOrders);
 
   // ── MoM: compare selected period vs same-length prior period ──
@@ -202,8 +202,8 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
   const prevRevenue   = Math.round(revenueBase    * prevRatio);
   const prevConfirmed = Math.round(confirmedBase  * prevRatio);
   const prevEmi       = Math.round(emiOrdersBase  * prevRatio);
-  const prevCollected = Math.round(revenueBase * (paySuccessBase / Math.max(confirmedBase, 1)) * prevRatio);
-  const prevSuccessRate = 82; // historical rate stays fixed
+  const prevCollected   = Math.round(revenueBase * prevRatio * collectedRatio);
+  const prevSuccessRate = 97;
 
   const pct = (cur: number, prev: number) =>
     prev > 0 ? Math.round(((cur - prev) / prev) * 100) : 0;
@@ -218,7 +218,7 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
         status: "active" as const, failRate: r.failRate,
         totalOrders:     sc(r.totalOrders),
         paymentSuccess:  sc(r.paymentSuccess),
-        collectedRevenue: sc(Math.round(r.revenue * (r.paymentSuccess / Math.max(r.confirmed, 1)))),
+        collectedRevenue: Math.round(sc(r.revenue) * collectedRatio),
         userDropped: sc(r.userDropped),
         failed:      sc(r.failed),
         emiOrders:   sc(r.emiOrders),
@@ -303,7 +303,7 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
       currentSuccessRate: successRate, previousSuccessRate: prevSuccessRate,
       ordersChange:          pct(confirmed,  prevConfirmed),
       revenueChange:         pct(revenue,    prevRevenue),
-      successRateChange:     successRate - prevSuccessRate,
+      successRateChange:     Math.round((successRate - prevSuccessRate) * 100) / 100,
       collectedRevenueChange: pct(collected, prevCollected),
       emiChange:             pct(emiOrders,  prevEmi),
     },

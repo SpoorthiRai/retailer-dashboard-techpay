@@ -43,7 +43,7 @@ export default function RetailerDashboard({ user, onLogout, initialFilters }: Pr
     dateTo:   '2026-05-31',
   })
 
-  const { data: metrics, isLoading, isError } = useMetrics(filters)
+  const { data: metrics, isLoading, isError } = useMetrics(filters, 0.02)
   const { data: filterOptions } = useFilterOptions()
 
   // Retailer's fixed store scope (set once at login, never changes)
@@ -246,7 +246,7 @@ export default function RetailerDashboard({ user, onLogout, initialFilters }: Pr
                             <span className={`font-semibold ${
                               store.failRate >= 10 ? 'text-red-500' :
                               store.failRate >= 5  ? 'text-amber-500' : 'text-green-600'}`}>
-                              {store.failRate}%
+                              {store.failRate.toFixed(2)}%
                             </span>
                           </td>
                           <td className="py-3">

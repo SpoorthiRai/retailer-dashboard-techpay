@@ -23,11 +23,11 @@ export function useFilterOptions() {
 }
 
 /** Main dashboard metrics — refetches when filters change */
-export function useMetrics(filters: Filters) {
+export function useMetrics(filters: Filters, collectedRatio?: number) {
   return useQuery({
-    queryKey: ["metrics", filters],
-    queryFn: () => api.fetchMetrics(filters),
-    staleTime: 30 * 1000, // cache for 30 seconds
+    queryKey: ["metrics", filters, collectedRatio],
+    queryFn: () => api.fetchMetrics(filters, collectedRatio),
+    staleTime: 30 * 1000,
   });
 }
 

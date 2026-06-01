@@ -38,7 +38,7 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 export default function TimeSeriesChart({ data }: Props) {
-  const [view, setView] = useState<ViewMode>('Monthly')
+  const [view, setView] = useState<ViewMode>('Daily')
 
   const chartData = useMemo(() => {
     if (view === 'Monthly') return data

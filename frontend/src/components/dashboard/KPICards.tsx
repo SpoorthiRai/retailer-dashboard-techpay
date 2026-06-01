@@ -93,11 +93,11 @@ export default function KPICards({ metrics, filters }: Props) {
                         : 'text-gray-400'}`}>
                     {change > 0 ? (
                       <span className="bg-green-50 px-1.5 py-0.5 rounded">
-                        ▲ +{change}% vs prev
+                        ▲ +{Number.isInteger(change) ? change : change.toFixed(2)}% vs prev
                       </span>
                     ) : change < 0 ? (
                       <span className="bg-red-50 px-1.5 py-0.5 rounded">
-                        ▲ +{change}% vs prev
+                        ▼ {Number.isInteger(change) ? change : change.toFixed(2)}% vs prev
                       </span>
                     ) : (
                       <span className="text-gray-400">— no change</span>

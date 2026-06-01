@@ -122,7 +122,7 @@ export default function StoresTab({ metrics }: Props) {
                   <div className={`text-base font-bold
                     ${isHealthy ? 'text-green-600' :
                       isWarning ? 'text-amber-500' : 'text-red-500'}`}>
-                    {store.failRate}%
+                    {store.failRate.toFixed(2)}%
                   </div>
                   <div className="text-[10px] text-gray-400 uppercase tracking-wide">Fail Rate</div>
                 </div>

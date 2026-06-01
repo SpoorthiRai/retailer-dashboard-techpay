@@ -23,7 +23,7 @@ async function withFallback<T>(realFn: () => Promise<T>, mockFn: () => Promise<T
 }
 
 export const api = {
-  fetchMetrics:          (f: Filters)   => withFallback(() => real.fetchMetrics(f),          () => mock.mockFetchMetrics(f)),
+  fetchMetrics:          (f: Filters, cr?: number) => withFallback(() => real.fetchMetrics(f), () => mock.mockFetchMetrics(f, cr)),
   fetchFilterOptions:    ()             => withFallback(() => real.fetchFilterOptions(),      () => mock.mockFetchFilterOptions()),
   fetchRevenueBreakdown: (f: Filters, type: 'collected' | 'gmv' = 'collected') =>
     withFallback(() => real.fetchRevenueBreakdown(f), () => mock.mockFetchRevenueBreakdown(f, type)),

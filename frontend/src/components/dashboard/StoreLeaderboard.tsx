@@ -32,7 +32,7 @@ function FailRate({ rate }: { rate: number }) {
                  '✅'
   return (
     <span className={`text-sm font-semibold ${color} flex items-center gap-1`}>
-      {rate}% payment failure {icon}
+      {rate.toFixed(2)}% payment failure {icon}
     </span>
   )
 }
