@@ -60,6 +60,59 @@ const PER_STORE = [
   { storeId: "695f8530d0244722bf0ae1c9", name: "Getafix Technologies Pvt. Ltd.",   city: "Abhaneri",  state: "Rajasthan",     totalOrders:  2, confirmed:  2, revenue:  160000, paymentSuccess:  2, userDropped: 0, failed: 0, emiOrders:  1, cashfreeOrders:  1, zyeOrders:  1, offlineOrders: 0,  payuOrders: 0, failRate: 0  },
 ];
 
+// ── Date-range scaling ──────────────────────────────────────────
+// Full-network GMV for each calendar month (basis = May 2026 = 1.0).
+// Used to compute a dateRatio that scales all count/revenue metrics.
+const MONTHLY_GMV: Record<string, number> = {
+  '2025-09':  3800000, '2025-10':  4900000,
+  '2025-11':  6185000, '2025-12': 10580000,
+  '2026-01': 12635000, '2026-02':  8240000,
+  '2026-03': 11505000, '2026-04': 14430000,
+  '2026-05': 20215000,
+  '2026-06': 18000000, // projected full month
+};
+const MAY_GMV = 20215000;
+
+// Monthly series used for the trend chart (store-ratio scaled in the function)
+const ALL_MONTH_SERIES = [
+  { month: "Nov 2025", key: "2025-11", baseSales:  6185000, baseQty:  49 },
+  { month: "Dec 2025", key: "2025-12", baseSales: 10580000, baseQty:  67 },
+  { month: "Jan 2026", key: "2026-01", baseSales: 12635000, baseQty:  82 },
+  { month: "Feb 2026", key: "2026-02", baseSales:  8240000, baseQty:  36 },
+  { month: "Mar 2026", key: "2026-03", baseSales: 11505000, baseQty:  74 },
+  { month: "Apr 2026", key: "2026-04", baseSales: 14430000, baseQty: 108 },
+  { month: "May 2026", key: "2026-05", baseSales: 20215000, baseQty: 245 },
+  { month: "Jun 2026", key: "2026-06", baseSales: 18000000, baseQty: 220 },
+];
+
+/** Fraction of a calendar month covered by [dateFrom, dateTo] (0–1). */
+function monthCoverage(key: string, dateFrom: string, dateTo: string): number {
+  const [y, m] = key.split('-').map(Number);
+  const mStart = new Date(y, m - 1, 1);
+  const mEnd   = new Date(y, m, 0);          // last day of month
+  const from   = new Date(dateFrom + 'T00:00:00');
+  const to     = new Date(dateTo   + 'T00:00:00');
+  if (from > mEnd || to < mStart) return 0;
+  const eStart = from > mStart ? from : mStart;
+  const eEnd   = to   < mEnd   ? to   : mEnd;
+  const covered = Math.round((eEnd.getTime() - eStart.getTime()) / 86400000) + 1;
+  return Math.max(0, Math.min(1, covered / mEnd.getDate()));
+}
+
+/**
+ * Returns the ratio of the selected date range's GMV to a full May 2026.
+ * E.g. "This Year" (Jan–Jun) → ~3.35, "This Week" (1–2 days) → ~0.06.
+ */
+function computeDateRatio(dateFrom: string, dateTo: string): number {
+  if (!dateFrom || !dateTo || dateFrom > dateTo) return 1.0;
+  let gmv = 0;
+  for (const [key, fullGmv] of Object.entries(MONTHLY_GMV)) {
+    const cov = monthCoverage(key, dateFrom, dateTo);
+    if (cov > 0) gmv += fullGmv * cov;
+  }
+  return gmv / MAY_GMV;
+}
+
 // Helper: match store against filters
 function filterStores(filters: Filters) {
   const selStates  = filters.state.map(s => s.toLowerCase());
@@ -93,66 +146,102 @@ export async function mockFetchFilterOptions(): Promise<FilterOptionsResponse> {
   };
 }
 
-// ── Metrics — filter-aware ──────────────────────────────────────
+// ── Metrics — filter-aware + date-aware ────────────────────────
 export async function mockFetchMetrics(filters: Filters): Promise<MetricsResponse> {
   await delay(300);
 
   const sel = filterStores(filters);
   if (sel.length === 0) return emptyMetrics();
 
-  // Aggregate
-  const totalOrders     = sel.reduce((s, r) => s + r.totalOrders,     0);
-  const confirmed       = sel.reduce((s, r) => s + r.confirmed,        0);
-  const revenue         = sel.reduce((s, r) => s + r.revenue,          0);
-  const paymentSuccess  = sel.reduce((s, r) => s + r.paymentSuccess,   0);
-  const userDropped     = sel.reduce((s, r) => s + r.userDropped,      0);
-  const failed          = sel.reduce((s, r) => s + r.failed,           0);
-  const emiOrders       = sel.reduce((s, r) => s + r.emiOrders,        0);
-  const cashfreeOrders  = sel.reduce((s, r) => s + r.cashfreeOrders,   0);
-  const zyeOrders       = sel.reduce((s, r) => s + r.zyeOrders,        0);
-  const offlineOrders   = sel.reduce((s, r) => s + r.offlineOrders,    0);
-  const payuOrders      = sel.reduce((s, r) => s + r.payuOrders,       0);
-  const pending         = Math.max(0, confirmed - paymentSuccess - userDropped - failed);
-  const collected       = Math.round(revenue * (paymentSuccess / Math.max(confirmed, 1)));
-  const successRate     = confirmed > 0 ? Math.round((paymentSuccess / confirmed) * 100) : 0;
+  // ── Base aggregates for the full May period (store filter only) ─
+  const totalOrdersBase    = sel.reduce((s, r) => s + r.totalOrders,   0);
+  const confirmedBase      = sel.reduce((s, r) => s + r.confirmed,     0);
+  const revenueBase        = sel.reduce((s, r) => s + r.revenue,       0);
+  const paySuccessBase     = sel.reduce((s, r) => s + r.paymentSuccess,0);
+  const userDroppedBase    = sel.reduce((s, r) => s + r.userDropped,   0);
+  const failedBase         = sel.reduce((s, r) => s + r.failed,        0);
+  const emiOrdersBase      = sel.reduce((s, r) => s + r.emiOrders,     0);
+  const cashfreeOrdersBase = sel.reduce((s, r) => s + r.cashfreeOrders,0);
+  const zyeOrdersBase      = sel.reduce((s, r) => s + r.zyeOrders,     0);
+  const offlineOrdersBase  = sel.reduce((s, r) => s + r.offlineOrders, 0);
+  const payuOrdersBase     = sel.reduce((s, r) => s + r.payuOrders,    0);
 
-  // Cashfree success = total success minus 100%-success methods
+  // ── Date scaling ───────────────────────────────────────────────
+  const dateRatio = computeDateRatio(filters.dateFrom, filters.dateTo);
+  if (dateRatio === 0) return emptyMetrics();
+  const sc = (n: number) => Math.max(0, Math.round(n * dateRatio));
+
+  const totalOrders    = sc(totalOrdersBase);
+  const confirmed      = sc(confirmedBase);
+  const revenue        = sc(revenueBase);
+  const paymentSuccess = sc(paySuccessBase);
+  const userDropped    = sc(userDroppedBase);
+  const failed         = sc(failedBase);
+  const emiOrders      = sc(emiOrdersBase);
+  const cashfreeOrders = sc(cashfreeOrdersBase);
+  const zyeOrders      = sc(zyeOrdersBase);
+  const offlineOrders  = sc(offlineOrdersBase);
+  const payuOrders     = sc(payuOrdersBase);
+
+  const pending         = Math.max(0, confirmed - paymentSuccess - userDropped - failed);
+  const collected       = Math.round(revenue * (paySuccessBase / Math.max(confirmedBase, 1)));
+  const successRate     = confirmedBase > 0 ? Math.round((paySuccessBase / confirmedBase) * 100) : 0;
   const cashfreeSuccess = Math.max(0, paymentSuccess - zyeOrders - offlineOrders);
 
-  // Store performance
+  // ── MoM: compare selected period vs same-length prior period ──
+  const fromDate = new Date((filters.dateFrom || '2026-05-01') + 'T00:00:00');
+  const toDate   = new Date((filters.dateTo   || '2026-05-31') + 'T00:00:00');
+  const duration = Math.round((toDate.getTime() - fromDate.getTime()) / 86400000);
+  const prevTo   = new Date(fromDate); prevTo.setDate(prevTo.getDate() - 1);
+  const prevFrom = new Date(prevTo);   prevFrom.setDate(prevFrom.getDate() - duration);
+  const prevRatio = computeDateRatio(
+    prevFrom.toISOString().slice(0, 10),
+    prevTo.toISOString().slice(0, 10),
+  );
+
+  const prevRevenue   = Math.round(revenueBase    * prevRatio);
+  const prevConfirmed = Math.round(confirmedBase  * prevRatio);
+  const prevEmi       = Math.round(emiOrdersBase  * prevRatio);
+  const prevCollected = Math.round(revenueBase * (paySuccessBase / Math.max(confirmedBase, 1)) * prevRatio);
+  const prevSuccessRate = 82; // historical rate stays fixed
+
+  const pct = (cur: number, prev: number) =>
+    prev > 0 ? Math.round(((cur - prev) / prev) * 100) : 0;
+
+  // ── Store performance (date-scaled) ───────────────────────────
   const storePerformance = sel
     .map(r => {
-      const storeInfo = STORES.find(s => s.id === r.storeId)
+      const storeInfo = STORES.find(s => s.id === r.storeId);
       return {
         storeId: r.storeId, name: r.name, city: r.city, state: r.state,
-        orders: r.confirmed, revenue: r.revenue, status: "active" as const, failRate: r.failRate,
-        totalOrders: r.totalOrders,
-        paymentSuccess: r.paymentSuccess,
-        collectedRevenue: Math.round(r.revenue * (r.paymentSuccess / Math.max(r.confirmed, 1))),
-        userDropped: r.userDropped,
-        failed: r.failed,
-        emiOrders: r.emiOrders,
-        cashfreeOrders: r.cashfreeOrders,
-        zyeOrders: r.zyeOrders,
-        offlineOrders: r.offlineOrders,
+        orders:   sc(r.confirmed), revenue: sc(r.revenue),
+        status: "active" as const, failRate: r.failRate,
+        totalOrders:     sc(r.totalOrders),
+        paymentSuccess:  sc(r.paymentSuccess),
+        collectedRevenue: sc(Math.round(r.revenue * (r.paymentSuccess / Math.max(r.confirmed, 1)))),
+        userDropped: sc(r.userDropped),
+        failed:      sc(r.failed),
+        emiOrders:   sc(r.emiOrders),
+        cashfreeOrders: sc(r.cashfreeOrders),
+        zyeOrders:   sc(r.zyeOrders),
+        offlineOrders: sc(r.offlineOrders),
         storeType: storeInfo?.type ?? 'RETAIL',
-      }
+      };
     })
     .sort((a, b) => b.revenue - a.revenue);
 
-  // Store failures (only stores with failRate > 0)
+  // ── Store failures ─────────────────────────────────────────────
   const storeFailures = sel
     .filter(r => r.failRate > 0)
     .sort((a, b) => b.failRate - a.failRate)
     .map(r => ({
       name: r.name, city: r.city,
       failRate: r.failRate,
-      total: r.confirmed,
-      failed: Math.round(r.confirmed * r.failRate / 100),
+      total:  sc(r.confirmed),
+      failed: sc(Math.round(r.confirmed * r.failRate / 100)),
     }));
 
-  // Scale full-network categories/brands proportionally to the selected stores' revenue.
-  // Base totals reflect the full 11-store network (20215000).
+  // ── Category / brand (scale by full revRatio = store + date) ──
   const revRatio = revenue / 20215000;
   const categorySales = [
     { name: "Laptops",     value: Math.round(128 * revRatio), revenue: Math.round(15790000 * revRatio), percentage: 78.1, color: "#1A8C7A" },
@@ -160,7 +249,6 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
     { name: "Printers",    value: Math.round( 28 * revRatio), revenue: Math.round( 1251000 * revRatio), percentage:  6.2, color: "#E67E22" },
     { name: "Accessories", value: Math.round( 57 * revRatio), revenue: Math.round(  384000 * revRatio), percentage:  1.9, color: "#4A235A" },
   ];
-
   const brandData = [
     { name: "HP",     productCount: 280, revenue: Math.round(12836000 * revRatio) },
     { name: "Lenovo", productCount: 150, revenue: Math.round( 3598000 * revRatio) },
@@ -169,20 +257,31 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
     { name: "HyperX", productCount:  71, revenue: Math.round(  445000 * revRatio) },
   ];
 
-  // Alerts — computed from live aggregated data
+  // ── Monthly series — only months covered by the date range ────
+  const storeRevRatio = revenueBase / 20215000;
+  const monthlySeries = ALL_MONTH_SERIES
+    .map(m => ({ ...m, cov: monthCoverage(m.key, filters.dateFrom, filters.dateTo) }))
+    .filter(m => m.cov > 0)
+    .map(m => ({
+      month: m.month,
+      totalSales: Math.round(m.baseSales * storeRevRatio * m.cov),
+      quantity:   Math.round(m.baseQty   * storeRevRatio * m.cov),
+    }));
+
+  // ── Alerts ─────────────────────────────────────────────────────
   const alerts = [];
   if (successRate >= 97) {
     alerts.push({ id: "success", icon: "🏆", message: `Payment success rate at ${successRate}% across ${sel.length} store${sel.length > 1 ? "s" : ""} — strong performance`, severity: "green" as const });
   }
-  if (emiOrders / Math.max(confirmed, 1) >= 0.5) {
-    alerts.push({ id: "emi", icon: "📈", message: `EMI / BNPL at ${emiOrders} orders (${Math.round(emiOrders / confirmed * 100)}%) — strong loan book growth this month`, severity: "green" as const });
+  if (confirmed > 0 && emiOrders / confirmed >= 0.5) {
+    alerts.push({ id: "emi", icon: "📈", message: `EMI / BNPL at ${emiOrders} orders (${Math.round(emiOrders / confirmed * 100)}%) — strong loan book growth`, severity: "green" as const });
   }
   const worstStore = [...sel].sort((a, b) => b.failRate - a.failRate)[0];
   if (worstStore && worstStore.failRate >= 5) {
     alerts.push({ id: "failure", icon: "⚠️", message: `${worstStore.name} has ${worstStore.failRate}% payment failure rate — review transaction logs`, severity: "amber" as const });
   }
   if (alerts.length < 2) {
-    alerts.push({ id: "rev", icon: "💰", message: `May 2026 GMV ₹${(revenue / 1e7).toFixed(2)} Cr — up vs prior month`, severity: "green" as const });
+    alerts.push({ id: "rev", icon: "💰", message: `GMV ₹${(revenue / 1e7).toFixed(2)} Cr for selected period`, severity: "green" as const });
   }
 
   return {
@@ -197,31 +296,19 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
     itemsInCart: 11,
 
     momComparison: {
-      currentMonth: "2026-05-01",
-      previousMonth: "2026-04-01",
-      currentOrders: confirmed,
-      previousOrders: Math.round(confirmed * 0.45),
-      currentRevenue: revenue,
-      previousRevenue: Math.round(revenue * 0.75),
-      currentSuccessRate: successRate,
-      previousSuccessRate: 82,
-      ordersChange: 125,
-      revenueChange: 40,
-      successRateChange: 16,
-      collectedRevenueChange: 41,
-      emiChange: 77,
+      currentMonth:  toDate.toISOString().slice(0, 10),
+      previousMonth: prevTo.toISOString().slice(0, 10),
+      currentOrders:   confirmed,    previousOrders:   prevConfirmed,
+      currentRevenue:  revenue,      previousRevenue:  prevRevenue,
+      currentSuccessRate: successRate, previousSuccessRate: prevSuccessRate,
+      ordersChange:          pct(confirmed,  prevConfirmed),
+      revenueChange:         pct(revenue,    prevRevenue),
+      successRateChange:     successRate - prevSuccessRate,
+      collectedRevenueChange: pct(collected, prevCollected),
+      emiChange:             pct(emiOrders,  prevEmi),
     },
 
-    monthlySeries: [
-      { month: "Nov 2025", totalSales: Math.round( 6185000 * revRatio), quantity: Math.round( 49 * revRatio) },
-      { month: "Dec 2025", totalSales: Math.round(10580000 * revRatio), quantity: Math.round( 67 * revRatio) },
-      { month: "Jan 2026", totalSales: Math.round(12635000 * revRatio), quantity: Math.round( 82 * revRatio) },
-      { month: "Feb 2026", totalSales: Math.round( 8240000 * revRatio), quantity: Math.round( 36 * revRatio) },
-      { month: "Mar 2026", totalSales: Math.round(11505000 * revRatio), quantity: Math.round( 74 * revRatio) },
-      { month: "Apr 2026", totalSales: Math.round(14430000 * revRatio), quantity: Math.round(108 * revRatio) },
-      { month: "May 2026", totalSales: revenue,                          quantity: totalOrders               },
-    ],
-
+    monthlySeries,
     storePerformance,
 
     orderFunnel: {
@@ -230,28 +317,28 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
     },
 
     paymentMethodBreakdown: [
-      ...(zyeOrders     > 0 ? [{ name: "CASHFREE_ZYPE", label: "Cashfree Zype (EMI/BNPL)", count: zyeOrders,    color: "#4A235A" }] : []),
-      ...(cashfreeOrders > 0 ? [{ name: "CASHFREE",     label: "Cashfree",                 count: cashfreeOrders, color: "#2E86C1" }] : []),
-      ...(offlineOrders  > 0 ? [{ name: "OFFLINE",      label: "Offline",                  count: offlineOrders,  color: "#1A8C7A" }] : []),
-      ...(payuOrders     > 0 ? [{ name: "PAYU",         label: "PayU",                     count: payuOrders,     color: "#E67E22" }] : []),
+      ...(zyeOrders     > 0 ? [{ name: "CASHFREE_ZYPE", label: "Cashfree Zype (EMI/BNPL)", count: zyeOrders,     color: "#4A235A" }] : []),
+      ...(cashfreeOrders > 0 ? [{ name: "CASHFREE",     label: "Cashfree",                  count: cashfreeOrders, color: "#2E86C1" }] : []),
+      ...(offlineOrders  > 0 ? [{ name: "OFFLINE",      label: "Offline",                   count: offlineOrders,  color: "#1A8C7A" }] : []),
+      ...(payuOrders     > 0 ? [{ name: "PAYU",         label: "PayU",                       count: payuOrders,     color: "#E67E22" }] : []),
     ],
 
     paymentMethodSuccess: [
-      ...(zyeOrders     > 0 ? [{ method: "CASHFREE_ZYPE", label: "Cashfree Zype (EMI/BNPL)", success: zyeOrders,    total: zyeOrders,    rate: 100 }] : []),
-      ...(offlineOrders  > 0 ? [{ method: "OFFLINE",      label: "Offline",                  success: offlineOrders, total: offlineOrders, rate: 100 }] : []),
-      ...(cashfreeOrders > 0 ? [{ method: "CASHFREE",     label: "Cashfree",                 success: cashfreeSuccess, total: cashfreeOrders, rate: Math.round(cashfreeSuccess / cashfreeOrders * 100) }] : []),
-      ...(payuOrders     > 0 ? [{ method: "PAYU",         label: "PayU",                     success: 0,             total: payuOrders,    rate: 0   }] : []),
+      ...(zyeOrders      > 0 ? [{ method: "CASHFREE_ZYPE", label: "Cashfree Zype (EMI/BNPL)", success: zyeOrders,     total: zyeOrders,     rate: 100 }] : []),
+      ...(offlineOrders  > 0 ? [{ method: "OFFLINE",       label: "Offline",                  success: offlineOrders, total: offlineOrders, rate: 100 }] : []),
+      ...(cashfreeOrders > 0 ? [{ method: "CASHFREE",      label: "Cashfree",                 success: cashfreeSuccess, total: cashfreeOrders, rate: Math.round(cashfreeSuccess / cashfreeOrders * 100) }] : []),
+      ...(payuOrders     > 0 ? [{ method: "PAYU",          label: "PayU",                     success: 0,             total: payuOrders,    rate: 0 }] : []),
     ],
 
     emiDetail: {
       count: emiOrders,
-      avgDownPayment:  19000,
-      avgLoanAmount:   76000,
+      avgDownPayment:   19000,
+      avgLoanAmount:    76000,
       totalDownPayment: emiOrders * 19000,
       totalLoanAmount:  emiOrders * 76000,
       totalEmiRevenue:  emiOrders * 95000,
-      avgEmiTicket:    95000,
-      avgNonEmiTicket: 66000,
+      avgEmiTicket:     95000,
+      avgNonEmiTicket:  66000,
     },
 
     categorySales,

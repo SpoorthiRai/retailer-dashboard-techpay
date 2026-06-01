@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { Filters, FilterOptionsResponse } from '@/types/api.types'
 import MultiSelect from './MultiSelect'
 
@@ -10,25 +9,27 @@ interface Props {
 }
 
 const DEFAULT_DATE_FROM = '2026-05-01'
-const DEFAULT_DATE_TO = '2026-05-30'
+const DEFAULT_DATE_TO   = '2026-05-31'
 
+// "All" covers every month with data in the mock.
+// The default (May) doesn't match any range → no button highlighted by default.
 const QUICK_RANGES = [
-  { label: 'All',          dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO },
-  { label: 'This Week',    dateFrom: getWeekStart(), dateTo: today() },
-  { label: 'This Month',   dateFrom: getMonthStart(), dateTo: today() },
-  { label: 'This Quarter', dateFrom: getQuarterStart(), dateTo: today() },
-  { label: 'This Year',    dateFrom: getYearStart(), dateTo: today() },
+  { label: 'All',          dateFrom: '2025-09-01',    dateTo: today()           },
+  { label: 'This Week',    dateFrom: getWeekStart(),   dateTo: today()           },
+  { label: 'This Month',   dateFrom: getMonthStart(),  dateTo: today()           },
+  { label: 'This Quarter', dateFrom: getQuarterStart(), dateTo: today()          },
+  { label: 'This Year',    dateFrom: getYearStart(),   dateTo: today()           },
 ]
 
 export default function FilterBar({ filters, options, onFiltersChange, hideStateCity = false }: Props) {
-  const [activeRange, setActiveRange] = useState('All')
+  const activeRange = QUICK_RANGES.find(
+    r => r.dateFrom === filters.dateFrom && r.dateTo === filters.dateTo
+  )?.label ?? ''
 
-  // Available cities based on selected states
   const availableCities = filters.state.length > 0
     ? [...new Set(filters.state.flatMap(s => options.stateToCities[s] || []))]
     : options.cities
 
-  // Available stores based on selected cities
   const availableStores = filters.city.length > 0
     ? [...new Set(filters.city.flatMap(c => options.cityToStores[c] || []))]
     : options.stores
@@ -58,33 +59,31 @@ export default function FilterBar({ filters, options, onFiltersChange, hideState
   }
 
   function handleQuickRange(range: typeof QUICK_RANGES[number]) {
-    setActiveRange(range.label)
     onFiltersChange({ ...filters, dateFrom: range.dateFrom, dateTo: range.dateTo })
   }
 
-  function resetLocationFilters() {
-    setActiveRange('All')
+  // Resets only location filters (state / city / store)
+  function handleClearLocation() {
     onFiltersChange({ ...filters, state: [], city: [], store: [] })
   }
 
-  function resetDateFilters() {
-    setActiveRange('All')
+  // Resets only date filters back to default May
+  function handleClearDate() {
     onFiltersChange({ ...filters, dateFrom: DEFAULT_DATE_FROM, dateTo: DEFAULT_DATE_TO })
   }
 
-  const locationFilterActive =
+  const locationActive =
     filters.state.length > 0 || filters.city.length > 0 || filters.store.length > 0
 
-  const dateFilterActive =
+  const dateActive =
     filters.dateFrom !== DEFAULT_DATE_FROM || filters.dateTo !== DEFAULT_DATE_TO
 
   return (
     <div className="bg-[#4a0072] rounded-xl p-4 space-y-3">
 
-      {/* Row 1 — dropdowns + date range */}
+      {/* Row 1 — location dropdowns + date inputs */}
       <div className="flex flex-wrap items-center gap-3">
 
-        {/* State multi-select */}
         {!hideStateCity && (
           <MultiSelect
             label="States"
@@ -94,7 +93,6 @@ export default function FilterBar({ filters, options, onFiltersChange, hideState
           />
         )}
 
-        {/* City multi-select */}
         {!hideStateCity && (
           <MultiSelect
             label="Cities"
@@ -104,7 +102,6 @@ export default function FilterBar({ filters, options, onFiltersChange, hideState
           />
         )}
 
-        {/* Store multi-select */}
         <MultiSelect
           label="Stores"
           options={availableStores}
@@ -112,30 +109,26 @@ export default function FilterBar({ filters, options, onFiltersChange, hideState
           onChange={handleStoreChange}
         />
 
-        {/* Reset location filters — next to Stores */}
+        {/* Clear location filters */}
         <button
-          onClick={resetLocationFilters}
-          disabled={!locationFilterActive}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg
-                     text-sm font-medium transition-colors border
-                     ${locationFilterActive
-                       ? 'bg-white/10 hover:bg-white/20 text-white border-white/20 cursor-pointer'
-                       : 'bg-white/5 text-white/30 border-white/10 cursor-not-allowed'}`}
+          onClick={handleClearLocation}
+          disabled={!locationActive}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm
+                     font-medium transition-colors border
+                     ${locationActive
+                       ? 'text-white border-white/30 hover:bg-white/10 cursor-pointer'
+                       : 'text-white/25 border-white/10 cursor-not-allowed'}`}
         >
-          <span>✕</span>
-          <span>Reset Filters</span>
+          ✕ Clear
         </button>
 
-        {/* Date range + clear */}
+        {/* Date inputs */}
         <div className="flex items-center gap-2 ml-auto">
           <span className="text-white/50 text-sm">From</span>
           <input
             type="date"
             value={filters.dateFrom}
-            onChange={(e) => {
-              setActiveRange('')
-              onFiltersChange({ ...filters, dateFrom: e.target.value })
-            }}
+            onChange={(e) => onFiltersChange({ ...filters, dateFrom: e.target.value })}
             className="bg-[#6a0096] text-white text-sm rounded-lg px-3 py-2
                        border border-white/10 cursor-pointer
                        focus:outline-none focus:ring-1 focus:ring-white/30"
@@ -144,33 +137,16 @@ export default function FilterBar({ filters, options, onFiltersChange, hideState
           <input
             type="date"
             value={filters.dateTo}
-            onChange={(e) => {
-              setActiveRange('')
-              onFiltersChange({ ...filters, dateTo: e.target.value })
-            }}
+            onChange={(e) => onFiltersChange({ ...filters, dateTo: e.target.value })}
             className="bg-[#6a0096] text-white text-sm rounded-lg px-3 py-2
                        border border-white/10 cursor-pointer
                        focus:outline-none focus:ring-1 focus:ring-white/30"
           />
-
-          {/* Clear date range */}
-          <button
-            onClick={resetDateFilters}
-            disabled={!dateFilterActive}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg
-                       text-sm font-medium transition-colors border
-                       ${dateFilterActive
-                         ? 'bg-white/10 hover:bg-white/20 text-white border-white/20 cursor-pointer'
-                         : 'bg-white/5 text-white/30 border-white/10 cursor-not-allowed'}`}
-          >
-            <span>✕</span>
-            <span>Clear Dates</span>
-          </button>
         </div>
 
       </div>
 
-      {/* Row 2 — quick range buttons */}
+      {/* Row 2 — quick range buttons + Clear */}
       <div className="flex items-center gap-2">
         {QUICK_RANGES.map((range) => (
           <button
@@ -184,6 +160,22 @@ export default function FilterBar({ filters, options, onFiltersChange, hideState
             {range.label}
           </button>
         ))}
+
+        {/* Divider */}
+        <div className="w-px h-4 bg-white/20 mx-1" />
+
+        {/* Clear date — resets date back to default May */}
+        <button
+          onClick={handleClearDate}
+          disabled={!dateActive}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm
+                     font-medium transition-colors border
+                     ${dateActive
+                       ? 'text-white border-white/30 hover:bg-white/10 cursor-pointer'
+                       : 'text-white/25 border-white/10 cursor-not-allowed'}`}
+        >
+          ✕ Clear
+        </button>
       </div>
 
     </div>

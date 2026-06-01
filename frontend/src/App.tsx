@@ -44,7 +44,7 @@ const DEFAULT_FILTERS: Filters = {
   city: [],
   store: [],
   dateFrom: '2026-05-01',
-  dateTo: '2026-05-30',
+  dateTo: '2026-05-31',
 }
 
 export default function App() {
