@@ -11,6 +11,7 @@ import type {
   MetricsResponse,
   FilterOptionsResponse,
   RevenueBreakdownResponse,
+  RevenueLineItem,
   InventoryResponse,
   StoreInfo,
   InventoryProduct,
@@ -120,10 +121,23 @@ export async function mockFetchMetrics(filters: Filters): Promise<MetricsRespons
 
   // Store performance
   const storePerformance = sel
-    .map(r => ({
-      storeId: r.storeId, name: r.name, city: r.city, state: r.state,
-      orders: r.confirmed, revenue: r.revenue, status: "active" as const, failRate: r.failRate,
-    }))
+    .map(r => {
+      const storeInfo = STORES.find(s => s.id === r.storeId)
+      return {
+        storeId: r.storeId, name: r.name, city: r.city, state: r.state,
+        orders: r.confirmed, revenue: r.revenue, status: "active" as const, failRate: r.failRate,
+        totalOrders: r.totalOrders,
+        paymentSuccess: r.paymentSuccess,
+        collectedRevenue: Math.round(r.revenue * (r.paymentSuccess / Math.max(r.confirmed, 1))),
+        userDropped: r.userDropped,
+        failed: r.failed,
+        emiOrders: r.emiOrders,
+        cashfreeOrders: r.cashfreeOrders,
+        zyeOrders: r.zyeOrders,
+        offlineOrders: r.offlineOrders,
+        storeType: storeInfo?.type ?? 'RETAIL',
+      }
+    })
     .sort((a, b) => b.revenue - a.revenue);
 
   // Store failures (only stores with failRate > 0)
@@ -372,36 +386,145 @@ export async function mockFetchInventory(storeNames?: string[]): Promise<Invento
 }
 
 // ── Revenue Breakdown ───────────────────────────────────────────
-export async function mockFetchRevenueBreakdown(): Promise<RevenueBreakdownResponse> {
+// Products cycled per payment method to keep the list realistic
+const RB_PRODUCTS_ZYE = [
+  { name: "HP OmniBook 5 Next Gen AI 16-ag1046AU, Silver",                    price: 119990 },
+  { name: "HP Spectre x360 2-in-1 Laptop 14-ef0053TU Bundle, Nightfall black", price: 154990 },
+  { name: "HP OMEN Gaming Laptop 16-am0239TX, Black",                          price: 134990 },
+  { name: "HP OmniBook X Flip 14-fm0100TU Next Gen AI PC, Blue",               price: 104990 },
+  { name: "HP ZBook 8 G1i 14 Mobile Workstation PC, Silver",                   price: 124990 },
+  { name: "ThinkBook 14 - AMD Ryzen 5, 16 GB RAM, 512 SSD, Win 11 Home",      price:  72990 },
+  { name: "HP Envy x360 2-in-1 Laptop 13-bf0085TU",                            price:  99990 },
+  { name: "Apple MacBook Air 13-inch M3",                                       price: 114990 },
+  { name: "Apple MacBook Pro 14-inch M3 Pro",                                   price: 179990 },
+  { name: "HP OmniStudio X All-in-One 32-c1574in Next Gen AI Desktop PC",      price: 112990 },
+  { name: "HP Pavilion Plus Laptop 14-ew0108TU, Blue",                         price:  89990 },
+  { name: "Lenovo LOQ Gen 9",                                                   price:  89990 },
+  { name: "ThinkPad E14 Gen 4 (Intel Core i5 / 16GB / 512GB)",                price:  94990 },
+  { name: "IdeaPad Slim 5 Gen 10",                                              price:  54990 },
+];
+const RB_PRODUCTS_CF = [
+  { name: "HP ProBook 440 14 G11 Business Laptop PC, Silver",  price:  68990 },
+  { name: "Dell Inspiron 15 3511 (i5/16GB/512GB)",             price:  64990 },
+  { name: "Dell XPS 13 9305 (i7/16GB/512GB SSD)",              price:  94990 },
+  { name: "Lenovo IdeaPad 3 15IAU7",                            price:  49990 },
+  { name: "Apple MacBook Air 13-inch M3",                       price: 114990 },
+  { name: "HP Smart Tank 750 Wi-Fi All-in-One Printer",         price:  24990 },
+  { name: "HP LaserJet MFP 135a Printer",                       price:  19990 },
+  { name: "HyperX Cloud Alpha Wireless Gaming Headset",         price:  14990 },
+];
+const RB_PRODUCTS_OFFLINE = [
+  { name: "HP KM260 Wireless Mouse and Keyboard Combo",  price:  2990 },
+  { name: "HP Smart Tank 580 Wi-Fi Printer",             price: 16990 },
+  { name: "HyperX Cloud II Gaming Headset",              price:  8990 },
+  { name: "HP LaserJet Pro M404n Printer",               price: 22990 },
+  { name: "Lenovo IdeaPad 3 15IAU7",                     price: 49990 },
+];
+const RB_CUSTOMERS = [
+  { name: "Arjun Mehta",      phone: "+91 98201 34567" },
+  { name: "Priya Sharma",     phone: "+91 97345 67890" },
+  { name: "Rahul Singh",      phone: "+91 96543 21098" },
+  { name: "Sneha Iyer",       phone: "+91 95678 12345" },
+  { name: "Vikram Nair",      phone: "+91 94321 09876" },
+  { name: "Ananya Joshi",     phone: "+91 93456 78901" },
+  { name: "Rohan Gupta",      phone: "+91 92567 89012" },
+  { name: "Kavya Reddy",      phone: "+91 91678 90123" },
+  { name: "Aditya Verma",     phone: "+91 90789 01234" },
+  { name: "Meera Pillai",     phone: "+91 89012 34567" },
+  { name: "Siddharth Kumar",  phone: "+91 88123 45678" },
+  { name: "Ishaan Patel",     phone: "+91 87234 56789" },
+  { name: "Divya Malhotra",   phone: "+91 86345 67890" },
+  { name: "Karthik Rao",      phone: "+91 85456 78901" },
+  { name: "Riya Agarwal",     phone: "+91 84567 89012" },
+  { name: "Arnav Bose",       phone: "+91 83678 90123" },
+  { name: "Pooja Shah",       phone: "+91 82789 01234" },
+  { name: "Nikhil Tiwari",    phone: "+91 81890 12345" },
+  { name: "Anika Choudhury",  phone: "+91 80901 23456" },
+  { name: "Tanvi Bhatt",      phone: "+91 79012 34567" },
+  { name: "Harsh Saxena",     phone: "+91 78123 45678" },
+  { name: "Shriya Nambiar",   phone: "+91 77234 56789" },
+  { name: "Manav Chopra",     phone: "+91 76345 67890" },
+  { name: "Varun Menon",      phone: "+91 75456 78901" },
+  { name: "Naina Bhatnagar",  phone: "+91 74567 89012" },
+  { name: "Deepak Jain",      phone: "+91 73678 90123" },
+  { name: "Sunita Rao",       phone: "+91 72789 01234" },
+  { name: "Mohit Sharma",     phone: "+91 71890 12345" },
+  { name: "Preethi Nair",     phone: "+91 70901 23456" },
+  { name: "Suresh Kumar",     phone: "+91 69012 34567" },
+];
+const RB_STORE_PREFIX: Record<string, string> = {
+  "694116c6cf680aaab0604138": "HPITNCHE",
+  "695f8530d0244722bf0ae1c9": "GTXABH",
+  "696a144f36894b28bd39b18e": "HPDAMGUR",
+  "69750a2a5983846ed2bb4e7c": "IDSGUR",
+  "69796a9f54c43a3e763a968f": "AADHRGUR",
+  "69799a9f54c43a3e763a9690": "AAD16GUR",
+  "6979ba9f54c43a3e763a9691": "AAD17GUR",
+  "6979fc3efb22023e701e38e9": "SUNHRSON",
+  "697a06c8fb22023e701e3de2": "VSDEL",
+  "699eeafa68e46cfa4b7e17f8": "ASIFBNG",
+  "69e90ee51914179938d0588e": "APPLEGHZ",
+};
+
+export async function mockFetchRevenueBreakdown(
+  filters: Filters,
+  type: 'collected' | 'gmv' = 'collected',
+): Promise<RevenueBreakdownResponse> {
   await delay(200);
-  return {
-    total: 15412000,
-    items: [
-      { orderId: "HPITNCHE001201", date: "2026-05-02", customer: "Arjun Mehta",      phone: "+91 98201 34567", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "HP OmniBook 5 Next Gen AI 16-ag1046AU, Silver",                                         qty: 1, unitPrice: 119990, paymentMethod: "Cashfree Zype (EMI)", amount: 119990 },
-      { orderId: "AADHRGUR001025", date: "2026-05-03", customer: "Priya Sharma",      phone: "+91 97345 67890", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec -14", product: "HP Spectre x360 2-in-1 Laptop 14-ef0053TU Bundle (6K7X3PA), Nightfall black aluminum", qty: 1, unitPrice: 154990, paymentMethod: "Cashfree Zype (EMI)", amount: 154990 },
-      { orderId: "AAD16GUR001001", date: "2026-05-04", customer: "Rahul Singh",       phone: "+91 96543 21098", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 16",  product: "HP OMEN Gaming Laptop 16-am0239TX, Black",                                              qty: 1, unitPrice: 134990, paymentMethod: "Cashfree Zype (EMI)", amount: 134990 },
-      { orderId: "AAD17GUR001001", date: "2026-05-05", customer: "Sneha Iyer",        phone: "+91 95678 12345", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 17",  product: "HP OmniBook X Flip 14-fm0100TU Next Gen AI PC, Blue",                                   qty: 1, unitPrice: 104990, paymentMethod: "Cashfree Zype (EMI)", amount: 104990 },
-      { orderId: "HPITNCHE001202", date: "2026-05-06", customer: "Vikram Nair",       phone: "+91 94321 09876", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "HP OMEN Gaming Laptop 16-am0239TX, Black",                                              qty: 1, unitPrice: 134990, paymentMethod: "Cashfree Zype (EMI)", amount: 134990 },
-      { orderId: "HPITNCHE001203", date: "2026-05-07", customer: "Ananya Joshi",      phone: "+91 93456 78901", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "Apple MacBook Air 13-inch M3",                                                          qty: 1, unitPrice: 114990, paymentMethod: "Cashfree",            amount: 114990 },
-      { orderId: "AAD16GUR001002", date: "2026-05-08", customer: "Rohan Gupta",       phone: "+91 92567 89012", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 16",  product: "Lenovo LOQ Gen 9",                                                                      qty: 1, unitPrice:  89990, paymentMethod: "Cashfree Zype (EMI)", amount:  89990 },
-      { orderId: "HPITNCHE001204", date: "2026-05-09", customer: "Kavya Reddy",       phone: "+91 91678 90123", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "HP ZBook 8 G1i 35.6 cm (14) Mobile Workstation PC, Silver",                            qty: 1, unitPrice: 124990, paymentMethod: "Cashfree Zype (EMI)", amount: 124990 },
-      { orderId: "AADHRGUR001026", date: "2026-05-10", customer: "Aditya Verma",      phone: "+91 90789 01234", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec -14", product: "ThinkBook 14 - AMD Ryzen 5, 16 GB RAM, 512 SSD, Win 11 Home",                          qty: 1, unitPrice:  72990, paymentMethod: "Cashfree Zype (EMI)", amount:  72990 },
-      { orderId: "SUNHRSON001045", date: "2026-05-11", customer: "Meera Pillai",      phone: "+91 89012 34567", city: "Sonipat", state: "Haryana",    store: "SUNRISE INFOTECH",         product: "HP Envy x360 2-in-1 Laptop 13-bf0085TU (726X6PA)",                                     qty: 1, unitPrice:  99990, paymentMethod: "Cashfree Zype (EMI)", amount:  99990 },
-      { orderId: "HPITNCHE001205", date: "2026-05-12", customer: "Siddharth Kumar",   phone: "+91 88123 45678", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "HP ProBook 440 35.6 cm (14) G11 Business Laptop PC, Silver",                           qty: 1, unitPrice:  68990, paymentMethod: "Cashfree",            amount:  68990 },
-      { orderId: "AAD17GUR001002", date: "2026-05-13", customer: "Ishaan Patel",      phone: "+91 87234 56789", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 17",  product: "ThinkBook 14 - AMD Ryzen 5, 16 GB RAM, 512 SSD, Win 11 Home",                          qty: 1, unitPrice:  72990, paymentMethod: "Cashfree",            amount:  72990 },
-      { orderId: "HPITNCHE001206", date: "2026-05-14", customer: "Divya Malhotra",    phone: "+91 86345 67890", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "Dell Inspiron 15 3511 (i5/16GB/512GB)",                                                qty: 1, unitPrice:  64990, paymentMethod: "Cashfree",            amount:  64990 },
-      { orderId: "AAD16GUR001003", date: "2026-05-15", customer: "Karthik Rao",       phone: "+91 85456 78901", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 16",  product: "HP ProBook 440 35.6 cm (14) G11 Business Laptop PC, Silver",                           qty: 1, unitPrice:  68990, paymentMethod: "Cashfree Zype (EMI)", amount:  68990 },
-      { orderId: "AADHRGUR001027", date: "2026-05-16", customer: "Riya Agarwal",      phone: "+91 84567 89012", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec -14", product: "Apple MacBook Air 13-inch M3",                                                          qty: 1, unitPrice: 114990, paymentMethod: "Cashfree Zype (EMI)", amount: 114990 },
-      { orderId: "HPITNCHE001207", date: "2026-05-17", customer: "Arnav Bose",        phone: "+91 83678 90123", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "HP OmniStudio X All-in-One 32-c1574in Next Gen AI Desktop PC",                         qty: 1, unitPrice: 112990, paymentMethod: "Cashfree Zype (EMI)", amount: 112990 },
-      { orderId: "AAD17GUR001003", date: "2026-05-19", customer: "Pooja Shah",        phone: "+91 82789 01234", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 17",  product: "HP Pavilion Plus 35.6 cm (14) Laptop 14-ew0108TU, Blue",                               qty: 1, unitPrice:  89990, paymentMethod: "Cashfree Zype (EMI)", amount:  89990 },
-      { orderId: "HPITNCHE001208", date: "2026-05-20", customer: "Nikhil Tiwari",     phone: "+91 81890 12345", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "HP Smart Tank 750 Wi Fi All-in-One Printer Duplexer with ADF and Smart Guided Button", qty: 1, unitPrice:  24990, paymentMethod: "Cashfree",            amount:  24990 },
-      { orderId: "AAD16GUR001004", date: "2026-05-21", customer: "Anika Choudhury",   phone: "+91 80901 23456", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 16",  product: "Dell XPS 13 9305 (i7/16GB/512GB SSD)",                                                 qty: 1, unitPrice:  94990, paymentMethod: "Cashfree",            amount:  94990 },
-      { orderId: "AADHRGUR001028", date: "2026-05-22", customer: "Tanvi Bhatt",       phone: "+91 79012 34567", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec -14", product: "IdeaPad Slim 5 Gen 10",                                                                 qty: 1, unitPrice:  54990, paymentMethod: "Cashfree Zype (EMI)", amount:  54990 },
-      { orderId: "HPITNCHE001209", date: "2026-05-23", customer: "Harsh Saxena",      phone: "+91 78123 45678", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "HP KM260 Wireless Mouse and Keyboard Combo",                                            qty: 3, unitPrice:   2990, paymentMethod: "Offline",             amount:   8970 },
-      { orderId: "AAD17GUR001004", date: "2026-05-26", customer: "Shriya Nambiar",    phone: "+91 77234 56789", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 17",  product: "Lenovo LOQ Gen 9",                                                                      qty: 1, unitPrice:  89990, paymentMethod: "Cashfree Zype (EMI)", amount:  89990 },
-      { orderId: "HPITNCHE001210", date: "2026-05-27", customer: "Manav Chopra",      phone: "+91 76345 67890", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "Apple MacBook Pro 14-inch M3 Pro",                                                      qty: 1, unitPrice: 179990, paymentMethod: "Cashfree Zype (EMI)", amount: 179990 },
-      { orderId: "AAD16GUR001005", date: "2026-05-28", customer: "Varun Menon",       phone: "+91 75456 78901", city: "Gurgaon", state: "Haryana",    store: "AADI COMPUTECH - Sec 16",  product: "ThinkPad E14 Gen 4 (Intel Core i5 / 16GB / 512GB)",                                    qty: 1, unitPrice:  94990, paymentMethod: "Cashfree Zype (EMI)", amount:  94990 },
-      { orderId: "HPITNCHE001211", date: "2026-05-29", customer: "Naina Bhatnagar",   phone: "+91 74567 89012", city: "Chennai", state: "Tamil Nadu", store: "Hp India",                 product: "HP OMEN Gaming Laptop 16-am0239TX, Black",                                              qty: 1, unitPrice: 134990, paymentMethod: "Cashfree Zype (EMI)", amount: 134990 },
-    ],
-  };
+
+  const sel = filterStores(filters);
+  if (sel.length === 0) return { items: [], total: 0 };
+
+  const items: RevenueLineItem[] = [];
+  let seq = 1;
+  let custIdx = 0;
+  let dayIdx = 0;
+
+  for (const store of sel) {
+    const prefix = RB_STORE_PREFIX[store.storeId] ?? "STORE";
+    const cashfreeSuccess = Math.max(0, store.paymentSuccess - store.zyeOrders - store.offlineOrders);
+
+    type Slot = { products: typeof RB_PRODUCTS_ZYE; method: string; status: string; count: number };
+    const slots: Slot[] = type === 'gmv'
+      ? [
+          { products: RB_PRODUCTS_ZYE,     method: "Cashfree Zype (EMI)", status: "Success",      count: store.zyeOrders      },
+          { products: RB_PRODUCTS_CF,      method: "Cashfree",            status: "Success",      count: cashfreeSuccess      },
+          { products: RB_PRODUCTS_OFFLINE, method: "Offline",             status: "Success",      count: store.offlineOrders  },
+          { products: RB_PRODUCTS_CF,      method: "Cashfree",            status: "Failed",       count: store.failed         },
+          { products: RB_PRODUCTS_CF,      method: "Cashfree",            status: "User Dropped", count: store.userDropped    },
+        ]
+      : [
+          { products: RB_PRODUCTS_ZYE,     method: "Cashfree Zype (EMI)", status: "Success", count: store.zyeOrders     },
+          { products: RB_PRODUCTS_CF,      method: "Cashfree",            status: "Success", count: cashfreeSuccess     },
+          { products: RB_PRODUCTS_OFFLINE, method: "Offline",             status: "Success", count: store.offlineOrders },
+        ];
+
+    for (const slot of slots) {
+      for (let i = 0; i < slot.count; i++) {
+        const prod = slot.products[seq % slot.products.length];
+        const cust = RB_CUSTOMERS[custIdx % RB_CUSTOMERS.length];
+        const day  = String(1 + (dayIdx % 30)).padStart(2, '0');
+        items.push({
+          orderId: `${prefix}${String(seq).padStart(6, '0')}`,
+          date: `2026-05-${day}`,
+          customer: cust.name,
+          phone: cust.phone,
+          city: store.city,
+          state: store.state,
+          store: store.name,
+          product: prod.name,
+          qty: 1,
+          unitPrice: prod.price,
+          paymentMethod: slot.method,
+          amount: prod.price,
+          ...(type === 'gmv' && { paymentStatus: slot.status }),
+        });
+        seq++; custIdx++; dayIdx++;
+      }
+    }
+  }
+
+  items.sort((a, b) => a.date.localeCompare(b.date));
+  const total = items.reduce((s, it) => s + it.amount, 0);
+  return { items, total };
 }

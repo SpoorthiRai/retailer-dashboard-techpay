@@ -169,31 +169,7 @@ export default function RetailerDashboard({ user, onLogout, initialFilters }: Pr
             <KPICards metrics={metrics} filters={filters} />
             <TimeSeriesChart data={metrics.monthlySeries} />
 
-            <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4">
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col">
-                <div className="flex items-center gap-2 mb-3 flex-shrink-0">
-                  <div className="w-1 h-4 bg-[#2E86C1] rounded-full" />
-                  <h3 className="text-sm font-semibold text-[#1C2B3A]">Store at a glance</h3>
-                </div>
-                <div className="flex flex-col flex-1 gap-1.5">
-                  {[
-                    { label: 'Avg Ticket',    value: metrics.confirmedOrders > 0 ? `₹${Math.round(metrics.gmv / metrics.confirmedOrders).toLocaleString('en-IN')}` : '—' },
-                    { label: 'EMI Orders',    value: metrics.emiOrders },
-                    { label: 'Success Rate',  value: `${metrics.paymentSuccessRate}%` },
-                    { label: 'Total Orders',  value: metrics.totalOrders },
-                    { label: 'Confirmed',     value: metrics.confirmedOrders },
-                    { label: 'Items in Cart', value: metrics.itemsInCart },
-                  ].map(stat => (
-                    <div key={stat.label}
-                         className="flex flex-1 items-center justify-between bg-gray-50 rounded-lg px-3">
-                      <span className="text-xs text-gray-500">{stat.label}</span>
-                      <span className="text-sm font-bold text-[#1C2B3A]">{stat.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <CategorySection metrics={metrics} />
-            </div>
+            <CategorySection metrics={metrics} />
           </div>
         )}
 

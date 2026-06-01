@@ -78,10 +78,21 @@ export interface StorePerformance {
   name: string;
   city: string;
   state: string;
-  orders: number;
+  orders: number;        // confirmed orders
   revenue: number;
   status: "active" | "inactive";
   failRate: number;
+  // Detail fields (populated by mock; optional so real API stays compatible)
+  totalOrders?: number;
+  paymentSuccess?: number;
+  collectedRevenue?: number;
+  userDropped?: number;
+  failed?: number;
+  emiOrders?: number;
+  cashfreeOrders?: number;
+  zyeOrders?: number;
+  offlineOrders?: number;
+  storeType?: string;
 }
 
 export interface OrderFunnel {
@@ -173,6 +184,7 @@ export interface RevenueLineItem {
   unitPrice: number;
   paymentMethod: string;
   amount: number;
+  paymentStatus?: string;   // present on GMV breakdown; absent on collected-revenue breakdown
 }
 
 export interface RevenueBreakdownResponse {

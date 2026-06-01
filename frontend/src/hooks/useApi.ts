@@ -49,12 +49,12 @@ export function useInventory(storeNames?: string[]) {
   });
 }
 
-/** Revenue breakdown — only fetches when dialog is opened */
-export function useRevenueBreakdown(filters: Filters, enabled: boolean) {
+/** Revenue breakdown — collected or gmv; only fetches when dialog is opened */
+export function useRevenueBreakdown(filters: Filters, type: 'collected' | 'gmv', enabled: boolean) {
   return useQuery({
-    queryKey: ["revenueBreakdown", filters],
-    queryFn: () => api.fetchRevenueBreakdown(filters),
-    enabled, // only runs when enabled = true
+    queryKey: ["revenueBreakdown", type, filters],
+    queryFn: () => api.fetchRevenueBreakdown(filters, type),
+    enabled,
     staleTime: 30 * 1000,
   });
 }

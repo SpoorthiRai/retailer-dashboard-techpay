@@ -8,8 +8,8 @@ interface Props {
 }
 
 const CARDS = [
-  { key: 'collectedRevenue', label: 'COLLECTED REVENUE', icon: '💰', color: '#1A8C7A', format: 'currency', clickable: true, dialogType: 'collected', changeKey: 'collectedRevenueChange', scrollTo: null },
   { key: 'gmv', label: 'GMV', icon: '₹', color: '#2E86C1', format: 'currency', clickable: true, dialogType: 'gmv', changeKey: 'revenueChange', scrollTo: null },
+  { key: 'collectedRevenue', label: 'COLLECTED REVENUE', icon: '💰', color: '#1A8C7A', format: 'currency', clickable: true, dialogType: 'collected', changeKey: 'collectedRevenueChange', scrollTo: null },
   { key: 'totalOrders', label: 'TOTAL ORDERS', icon: '📦', color: '#E67E22', format: 'number', clickable: false, changeKey: 'ordersChange', scrollTo: 'payment-health' },
   { key: 'confirmedOrders', label: 'CONFIRMED ORDERS', icon: '✅', color: '#27AE60', format: 'number', clickable: false, changeKey: 'ordersChange', scrollTo: 'payment-health' },
   { key: 'paymentSuccessRate', label: 'PAYMENT SUCCESS RATE', icon: '⚡', color: '#E74C3C', format: 'percent', clickable: false, changeKey: 'successRateChange', scrollTo: 'payment-health' },
@@ -123,9 +123,7 @@ export default function KPICards({ metrics, filters }: Props) {
           filters={filters}
           type={openDialog}
           totalValue={formatValue(
-            metrics[
-              openDialog === 'collected' ? 'collectedRevenue' : 'gmv'
-            ],
+            metrics[openDialog === 'collected' ? 'collectedRevenue' : 'gmv'],
             'currency'
           )}
           onClose={() => setOpenDialog(null)}

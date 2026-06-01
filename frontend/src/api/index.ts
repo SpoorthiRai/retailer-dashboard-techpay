@@ -12,10 +12,21 @@ import * as mock from "./mock";
 
 const USE_REAL = Boolean(import.meta.env.VITE_API_BASE_URL);
 
+// Try real API; if it fails (backend down / CORS / wrong URL) fall back to mock.
+async function withFallback<T>(realFn: () => Promise<T>, mockFn: () => Promise<T>): Promise<T> {
+  if (!USE_REAL) return mockFn();
+  try {
+    return await realFn();
+  } catch {
+    return mockFn();
+  }
+}
+
 export const api = {
-  fetchMetrics:          (f: Filters) => USE_REAL ? real.fetchMetrics(f)          : mock.mockFetchMetrics(f),
-  fetchFilterOptions:    ()           => USE_REAL ? real.fetchFilterOptions()      : mock.mockFetchFilterOptions(),
-  fetchRevenueBreakdown: (f: Filters) => USE_REAL ? real.fetchRevenueBreakdown(f) : mock.mockFetchRevenueBreakdown(),
-  fetchInventory:        (s?: string[]) => USE_REAL ? real.fetchInventory(s)      : mock.mockFetchInventory(),
-  fetchStores:           ()           => USE_REAL ? real.fetchStores()             : mock.mockFetchStores(),
+  fetchMetrics:          (f: Filters)   => withFallback(() => real.fetchMetrics(f),          () => mock.mockFetchMetrics(f)),
+  fetchFilterOptions:    ()             => withFallback(() => real.fetchFilterOptions(),      () => mock.mockFetchFilterOptions()),
+  fetchRevenueBreakdown: (f: Filters, type: 'collected' | 'gmv' = 'collected') =>
+    withFallback(() => real.fetchRevenueBreakdown(f), () => mock.mockFetchRevenueBreakdown(f, type)),
+  fetchInventory:        (s?: string[]) => withFallback(() => real.fetchInventory(s),        () => mock.mockFetchInventory()),
+  fetchStores:           ()             => withFallback(() => real.fetchStores(),             () => mock.mockFetchStores()),
 };
